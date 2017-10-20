@@ -1,0 +1,55 @@
+/*****************Tutuo VM********************************************************************/
+https://www.taniarascia.com/what-are-vagrant-and-virtualbox-and-how-do-i-use-them/
+https://www.taniarascia.com/how-to-install-apache-php-7-1-and-mysql-on-ubuntu-with-vagrant/
+
+
+/*****************etape config d'une VM******************************************************/
+//**update apt
+sudo apt-get update && sudo apt-get upgrade
+//**install apache
+sudo apt-get install apache2 -y
+
+//**accès conf apache:
+sudo nano /etc/apache2/apache2.conf
+//**ajout server name:
+ServerName localhost
+//**restart apache
+sudo /etc/init.d/apache2 reload
+sudo service apache2 restart
+//**ajout repo php
+sudo apt-add-repository ppa:ondrej/php
+//**reupdate apt
+sudo apt-get update
+//**install php 7.1
+sudo apt-get install php7.1
+//**install mysql
+sudo apt-get install mysql-server php7.1-mysql
+//**accès conf mysql
+sudo vim /etc/mysql/my.cnf
+//**désactiver
+# skip-external-locking
+# bind-address 0.0.0.0
+//**restart mysql
+sudo service mysql restart
+//**install autre plugin
+sudo apt-get install php-xml php-intl php-memcached memcached 
+sudo apt-get install curl php-curl php-bcmath php-mbstring php-gd
+
+
+/*****************copier sur ssh***************************************************************/
+scp partners_03_10_2017.sql.gz leguide@lgw6.be.p1.ciao:/home/leguide/
+scp -r leguide@lgw6:'/home/leguide/partners_03_10_2017.sql.gz' .
+
+/*****************creation conf vhost*********************************************************/
+/etc/apache2/sites-available
+monsite1.conf
+cd /etc/apache2/site-enabled
+sudo a2ensite monsite1.conf
+
+/*****************MYSQL***********************************************************************/
+//**connexion sur mysql
+mysql -u root -p
+//**dump base sur mysql
+mysql -h localhost -u root -p root partners < partners_03_10_2017.sql
+/***voir log Mysql ***/
+tail -f /var/lib/mysql/vagrant-ubuntu-trusty-64.log
