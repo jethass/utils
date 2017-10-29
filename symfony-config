@@ -1,0 +1,36 @@
+Détails :
+
+root
+apt-get install php5 php-apc php5-intl php5-mysql 
+apt-get install mysql-server
+apt-get install curl
+modif /etc/php5/apache2/php.ini timezone Europe/Paris
+nano /etc/apache2/sites-enabled/000-default.conf
+
+VirtualHost *:80 
+ServerName domain.tld 
+ServerAlias www.domain.tld DocumentRoot /home/webuser/www/ 
+Directory /home/webuser/www/ 
+Options Indexes FollowSymLinks 
+         AllowOverride None 
+         Require all granted /Directory 
+ErrorLog $APACHE_LOG_DIR/error.log 
+CustomLog $APACHE_LOG_DIR//access.log combined
+
+/VirtualHost
+
+apache2 restart
+
+user
+curl -sS https://getcomposer.org/installer | php
+php composer.phar -vvv create-project symfony/framework-standard-edition sf "3.0.3"
+
+root
+HTTPDUSER= voir Setting up Permissions http://symfony.com/doc/current/book/i...
+sudo setfacl -R -m u:"$HTTPDUSER":rwX -m u:`whoami`:rwX var
+sudo setfacl -dR -m u:"$HTTPDUSER":rwX -m u:`whoami`:rwX var
+
+user
+nano config.php add 10.0.2.2
+nano app_dev.php add 10.0.2.2
+php bin/console -V
