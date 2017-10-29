@@ -123,5 +123,15 @@ $em->flush();
     foreach ($annonce->getCategories() as $category) {
       $annonce->removeCategory($category);
     }
+//twig
+
+{% if not annonce.categories.empty %}
+  <p>
+    Cette annonce est parue dans les catégories suivantes :
+    {% for category in annonce.categories %}
+      {{ category.name }}{% if not loop.last %}, {% endif %}
+    {% endfor %}
+  </p>
+{% endif %}
 
     
