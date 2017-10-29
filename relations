@@ -118,4 +118,10 @@ foreach ($listCategories as $category) {
 
 $em->flush();
 
+//supression
+// On boucle sur les catégories de l'annonce pour les supprimer
+    foreach ($annonce->getCategories() as $category) {
+      $annonce->removeCategory($category);
+    }
+
     
