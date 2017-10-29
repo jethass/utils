@@ -1,26 +1,70 @@
-Advert  et Image , relation unidirectionel
+OneToOne : Annonce  et Image , relation unidirectionel
 /******************************************************************/
-class Advert{   //ce l'entite propréitaire qui contient image_id
-private $url;
-private $alt;
+class Annonce {   //ce l'entite propréitaire qui contient image_id
 /**
   * @ORM\OneToOne(targetEntity="OC\PlatformBundle\Entity\Image", cascade={"persist"})
   * @ORM\JoinColumn(nullable=false)  //si on veut que image_id accepte null on change true
   */
-private $image;
+private $image;  //va genere image_id dans table annonce
+
 }
 
-class Image{
-//rien a ajouté
+class Image {
+ private $url;
+ private $alt;
+ //rien a ajouté pour la relation
 }
 
 //manipulation
-$image = $advert->getImage();
-$url_image = $advert->getImage()->getUrl();
-$id_image=$advert->getImage()->getId();
+$image = $annonce->getImage();
+$url_image = $annonce->getImage()->getUrl();
+$id_image=$annonce->getImage()->getId();
 
-{% if advert.image is not null %}
-  <img src="{{ advert.image.url }}" alt="{{ advert.image.alt }}">
+{% if annonce.image is not null %}
+  <img src="{{ annonce.image.url }}" alt="{{ annonce.image.alt }}">
 {% endif %}
 /*****************************************************************************************************************************************/
 
+OneToMany : Annonce  et Candidature , relation unidirectionel
+/******************************************************************/
+class Candidature
+{
+  /**
+   * @ORM\ManyToOne(targetEntity="OC\PlatformBundle\Entity\Annonce")
+   * @ORM\JoinColumn(nullable=false)  //interdire de faire une candidature sans annonce
+   */
+  private $annonce;  //va generer annonce_id dans table candidature
+}
+class Annonce {
+}
+
+//manupilation:
+// Création de l'entité Advert
+    $annonce = new Annonce();
+    $annonce->setTitle('Recherche développeur Symfony2.');
+    $annonce->setAuthor('Alexandre');
+    $annonce->setContent("Nous recherchons un développeur Symfony2 débutant sur Lyon. Blabla…");
+
+    // Création d'une première candidature
+    $candidature = new Candidature();
+    $candidature->setContent("J'ai toutes les qualités requises.");
+
+    // On lie les candidatures à l'annonce
+    $candidature->setAnnonce($annonce);
+    // On récupère l'EntityManager
+    $em = $this->getDoctrine()->getManager();
+    $em->persist($annonce);
+
+// On récupère l'annonce $id
+    $annonce = $em ->getRepository('OCPlatformBundle:Annonce')->find($id) ;
+
+    if (null === $annonce) {
+      throw new NotFoundHttpException("L'annonce d'id ".$id." n'existe pas.");
+    }
+
+    // On récupère la liste des candidatures de cette annonce
+    $list_candidature = $em->getRepository('OCPlatformBundle:Candidature')->findBy(array('annonce' => $annonce));
+    
+    
+    
+    
