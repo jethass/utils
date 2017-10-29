@@ -1,15 +1,11 @@
 Advert  et Image , relation unidirectionel
 /******************************************************************/
-class Advert{
-  /**
-   * @ORM\OneToOne(targetEntity="OC\PlatformBundle\Entity\Image", cascade={"persist"})
-   */
-  private $image;
-
-ou
+class Advert{   //ce l'entite propréitaire qui contient image_id
+private $url;
+private $alt;
 /**
   * @ORM\OneToOne(targetEntity="OC\PlatformBundle\Entity\Image", cascade={"persist"})
-  * @ORM\JoinColumn(nullable=false)
+  * @ORM\JoinColumn(nullable=false)  //si on veut que image_id accepte null on change true
   */
 private $image;
 }
@@ -17,3 +13,14 @@ private $image;
 class Image{
 //rien a ajouté
 }
+
+//manipulation
+$image = $advert->getImage();
+$url_image = $advert->getImage()->getUrl();
+$id_image=$advert->getImage()->getId();
+
+{% if advert.image is not null %}
+  <img src="{{ advert.image.url }}" alt="{{ advert.image.alt }}">
+{% endif %}
+/*****************************************************************************************************************************************/
+
