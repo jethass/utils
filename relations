@@ -66,5 +66,56 @@ class Annonce {
     $list_candidature = $em->getRepository('OCPlatformBundle:Candidature')->findBy(array('annonce' => $annonce));
     
     
+/*****************************************************************************************************************************************/
+
+ManyToMany : Annonce  et category , relation unidirectionel
+/******************************************************************/
     
+class Annonce
+{
+  /**
+   * @ORM\ManyToMany(targetEntity="OC\PlatformBundle\Entity\Category", cascade={"persist"})
+   */
+  private $categories;
+  public function __construct()
+  {
+    $this->categories = new ArrayCollection();
+  }
+  public function addCategory(Category $category)
+  {
+    $this->categories[] = $category;
+    return $this;
+  }
+
+  public function removeCategory(Category $category)
+  {
+    $this->categories->removeElement($category);
+  }
+
+  public function getCategories()
+  {
+    return $this->categories;
+  }
+}   
+
+class Category
+{
+  // Nul besoin d'ajouter une propriété ici
+}  
+
+//manipulation
+ $em = $this->getDoctrine()->getManager();
+ $annonce = $em->getRepository('OCPlatformBundle:Annonce')->find($id);
+
+if (null === $annonce) {
+  throw new NotFoundHttpException("L'annonce d'id ".$id." n'existe pas.");
+}
+$listCategories = $em->getRepository('OCPlatformBundle:Category')->findAll();
+// On boucle sur les catégories pour les lier à l'annonce
+foreach ($listCategories as $category) {
+      $annonce->addCategory($category);
+}
+
+$em->flush();
+
     
