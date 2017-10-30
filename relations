@@ -134,4 +134,55 @@ $em->flush();
   </p>
 {% endif %}
 
-    
+// relation avec attribut : Commande One-To-Many CommandeProduit Many-To-One Produit
+class CommandeProduit
+{
+  private $id;
+  /**
+   * @ORM\Column(name="quantite", type="integer")
+   */
+  private $quantite;
+  /**
+   * @ORM\ManyToOne(targetEntity="OC\PlatformBundle\Entity\Commande")
+   * @ORM\JoinColumn(nullable=false)
+   */
+  private $commande;   //va generer commande_id
+  /**
+   * @ORM\ManyToOne(targetEntity="OC\PlatformBundle\Entity\Produit")
+   * @ORM\JoinColumn(nullable=false)
+   */
+  private $produit;   //va generer produit_id
+}
+
+//manipulation:
+ // On récupère l'EntityManager
+    $em = $this->getDoctrine()->getManager();
+
+    // Création de l'entité Commande
+    $commande = new Commande();
+    $commande->setReference('1222');   
+
+    // On récupère toutes les produits
+    $listProduits = $em->getRepository('OCPlatformBundle:Produit')->findAll();
+
+    // Pour chaque compétence
+    foreach ($listProduits as $produit) {
+      // On crée une nouvelle « relation entre 1 commande et 1 produit »
+      $commandeProduit = new CommandeProduit();
+
+      // On la lie à la commande, qui est ici toujours la même
+      $commandeProduit->setCommande($commande);
+      // On la lie au produit, qui change ici dans la boucle foreach
+      $commandeProduit->setProduit($produit);
+
+      // Arbitrairement
+      $commandeProduit->setQuantite('1');
+
+      // Et bien sûr, on persiste cette entité de relation, propriétaire des deux autres relations
+      $em->persist($commandeProduit);
+    }
+
+    $em->persist($commande);
+
+    // On déclenche l'enregistrement
+    $em->flush();
