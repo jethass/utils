@@ -67,6 +67,49 @@ class Annonce {
     
     
 /*****************************************************************************************************************************************/
+OneToMany : Annonce  et Candidature , relation bidirectionel
+/******************************************************************/
+class Candidature
+{
+  /**
+   * @ORM\ManyToOne(targetEntity="OC\PlatformBundle\Entity\Annonce" , inversedBy="candidatures")
+   * @ORM\JoinColumn(name="annonce_id", referencedColumnName="id")
+   */
+  private $annonce;  //va generer annonce_id dans table candidature
+}
+class Annonce {
+  
+   /**
+   * @ORM\OneToMany(targetEntity="OC\PlatformBundle\Entity\Candidature", mappedBy="annonce")
+   */
+  private $candidatures;
+  public function __construct()
+  {
+    $this->candidatures = new ArrayCollection();
+  }
+
+  public function addCandidature(Candidature $candidature)
+  {
+    $this->candidatures[] = $candidature;
+    // On lie l'annonce à la candidature
+    $candidature->setAnnonce($this);
+
+    return $this;
+  }
+
+  public function removeCandidature(Candidature $candidature)
+  {
+    $this->candidatures->removeElement($candidature);
+  }
+
+  public function getCandidature()
+  {
+    return $this->candidatures;
+  }
+}
+
+
+/*****************************************************************************************************************************************/
 
 ManyToMany : Annonce  et category , relation unidirectionel
 /******************************************************************/
