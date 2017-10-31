@@ -1,0 +1,87 @@
+services:
+    omea_gestion_telco_evenement.evenement.repository:
+        factory_service: 'doctrine.orm.gestionEvenements_entity_manager'
+        factory_method: 'getRepository'
+        class: 'Omea\Entity\GestionEvenements\EvenementRepository'
+        arguments: ['Omea\Entity\GestionEvenements\Evenement']
+        
+    omea_gestion_telco_evenement.gestionevenementerreur.repository:
+        factory_service: 'doctrine.orm.gestionEvenements_entity_manager'
+        factory_method: 'getRepository'
+        class: 'Omea\Entity\GestionEvenements\GestionEvenementErreurRepository'
+        arguments: ['Omea\Entity\GestionEvenements\GestionEvenementErreur']
+    
+    omea_gestion_telco_evenement.evenementdefinition.repository:
+        factory_service: 'doctrine.orm.gestionEvenements_entity_manager'
+        factory_method: 'getRepository'
+        class: 'Omea\Entity\GestionEvenements\EvenementDefinitionRepository'
+        arguments: ['Omea\Entity\GestionEvenements\EvenementDefinition']
+      
+    omea_gestion_telco_evenement.stockmsisdn.repository:
+        factory_service: 'doctrine.orm.main_entity_manager'
+        factory_method: 'getRepository'
+        class: 'Omea\Entity\Main\StockMsisdnRepository'
+        arguments: ['Omea\Entity\Main\StockMsisdn']
+    omea_gestion_telco_evenement.acteoptionserializer:
+        class: Omea\GestionTelco\EvenementBundle\ActeManager\ActeOptionsSerializer
+        tags:
+            - { name: monolog.logger, channel: gestiontelco.evenement.acteoptionsserializer }
+
+    omea_gestion_telco_evenement.actesmanager:
+        class: Omea\GestionTelco\EvenementBundle\ActeManager\ActesManager
+        arguments:
+            - @omea_gestion_telco_evenement.acteoptionserializer
+            - @omea_gestion_telco_evenement.evenementdefinition.repository
+        tags:
+            - { name: monolog.logger, channel: gestiontelco.evenement.actesmanages }
+
+    omea_gestion_telco_evenement.actesmanagerservice:
+        class: Omea\GestionTelco\EvenementBundle\Services\ActesManagerService
+        arguments:
+            - @logger
+            - @doctrine.orm.gestionEvenements_entity_manager
+            - @omea_gestion_telco_evenement.actesmanager
+            - @omea_gestion_telco_evenement.stockmsisdn.repository
+            - @omea_gestion_telco_evenement.evenement.repository
+            - @omea_gestion_telco_evenement.gestionevenementerreur.repository
+        tags:
+            - { name: monolog.logger, channel: gestiontelco.evenement.actemanagerservice }
+
+    omea_gestion_telco_evenement.services.evenements:
+        class: Omea\GestionTelco\EvenementBundle\Services\EvenementService
+        arguments:
+            - @validator
+            - @logger
+            - @doctrine.orm.gestionEvenements_entity_manager
+        tags:
+            - { name: monolog.logger, channel: gestiontelco.evenement.evenementservice }
+
+    omea_gestion_telco_evenement.acte.histo:
+        class: Omea\GestionTelco\EvenementBundle\ActeManager\Actes\HistoActe
+        arguments:
+            - %webservices.posehisto%
+            - @logger
+            - %omea_gestion_telco_evenement.config_params%
+        tags:
+            - { name: monolog.logger, channel: gestiontelco.evenement.acte.histo }
+            - { name: omea_gestion_telco_evenement.acte, acteName: histo }
+
+    omea_gestion_telco_evenement.acte.sms:
+        class: Omea\GestionTelco\EvenementBundle\ActeManager\Actes\SMSActe
+        arguments:
+            - %webservices.envoi_sms%
+            - %webservices.eligibilityPassEurope%
+            - @logger
+        tags:
+            - { name: monolog.logger, channel: gestiontelco.evenement.acte.sms }
+            - { name: omea_gestion_telco_evenement.acte, acteName: sms }
+
+    omea_gestion_telco_evenement.acte.bridage:
+        class: Omea\GestionTelco\EvenementBundle\ActeManager\Actes\BridageActe
+        arguments:
+            - %webservices.addbridage%
+            - @logger
+            - %omea_gestion_telco_evenement.config_params%
+        tags:
+            - { name: monolog.logger, channel: gestiontelco.evenement.acte.bridage }
+            - { name: omea_gestion_telco_evenement.acte, acteName: bridage }
