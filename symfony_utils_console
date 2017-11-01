@@ -1,0 +1,1487 @@
+un framework c'est un ensemble de composants qui servent à créer les fondations, l'architecture et les grandes lignes d'un logiciel.
+L'objectif premier d'un framework est d'améliorer la productivité des développeurs qui l'utilisent.
+===> un code bien organisé est un code facilement maintenable et évolutif.
+exp: Dailymotion utilise Symfony
+
+symfony 1.4 en 2005
+symfony2 en en août 2011
+demande version PHP 5.3.2 ou plus
+--------------------------------------------------------------------------------------------------
+symfony 1.4  ne sera plus maintenue donc plus d'évolution  en dev.
+symfony2 est beaucoup plus rapide 
+Il y a une plus grande liberté architecturale (système du bundle)
+il arrive avec:
+Injection de dependances
+Event dispatcher 
+Doctrine 2
+Namespace
+Moteur de templating twig
+Param converter
+Le cache http est plus performant etc...
+---------------------------------------------------------------------------------------------------------
+
+
+il faut mettre ces permissions :
+chmod 777 -R app/cache
+chmod 777 -R app/logs
+
+Le contrôleur frontal : /web, il s'agit de app.php (PROD) ou app_dev.php(DEV)
+
+la convention PSR-0 :une convention de nommage et d'autoloading
+Composer trouve toutes les bibliothèques sur le site http://www.packagist.org
+
+Console:
+-----------------------------------
+Télecharger  composer windows.
+
+créer projet symfony with composer
+composer create-project symfony/framework-standard-edition nomProjet 2.1.3
+
+Création d’un bundle :
+php app/console generate:bundle
+
+création base donné with mysqlWorkbench
+
+puis géneration annotation from Base:
+php app/console doctrine:mapping:convert annotation ./src/Namespace/NomBundle/Entity --from-database --force
+
+puis géneration d'XML from Base:
+php app/console doctrine:mapping:convert xml ./src/Namespace/NomBundle/Resources/config/doctrine --from-database --force
+ouuuuuuuuuuuuuuuu
+
+géneration d'YML from Base:
+php app/console doctrine:mapping:convert yml ./src/Miro/KPBundle/Resources/config/doctrine --from-database --force --namespace="Miro\KPBundle\Entity\\"
+
+
+mapper les XML generé avec les annotation:
+php app/console doctrine:mapping:import NamespaceNomBundle annotation
+
+puis Génération des entités (getter/setter) :
+php app/console doctrine:generate:entities NamespaceNomBundle
+
+Création de la base de donnée à partir de config:
+php app/console doctrine:database:create
+
+Création des tables de base des données a partir des entities:
+php app/console doctrine:schema:create
+
+Mettre à jour les tables :
+php app/console doctrine:schema:update --force
+
+Mettre à jour les CSS, JS et images :
+php app/console assets:install web
+
+Vider le cache :
+php app/console cache:clear --env=prod 
+ou en dev app/console cache:clear
+
+Création d’un utilisateur pour FOSUserBundle :
+php app/console fos:user:create username email password
+
+Rendre un utilisateur admin :
+php app/console fos:user:promote username
+ROLE_ADMIN
+
+*Response:
+-----------------------------------
+use Symfony\Component\HttpFoundation\Response;
+$response = new Response();
+$response->setContent('<html><body><h1>Hello world!</h1></body></html>');
+$response->setStatusCode(Response::HTTP_OK);
+//renvoie du JSON et non du HTML
+$response->headers->set('Content-Type', 'application/json');
+$response->headers->set('Content-Type', 'text/html');
+return $response;
+
+// prints the HTTP headers followed by the content
+$response->send();
+
+
+*Request:
+-----------------------------------
+use Symfony\Component\HttpFoundation\Request;
+$request = Request::createFromGlobals();
+// the URI being requested (e.g. /about) minus any query parameters
+$request->getPathInfo();
+
+// retrieve GET and POST variables respectively
+GET: <?php $request->query->get('tag')
+POST: <?php $request->request->get('tag')
+cookies: <?php $request->cookies->get('tag');
+
+//chek if is POST
+if( $request->getMethod() == 'POST' )
+{
+
+}
+
+//chek if is ajax
+if( $request->isXmlHttpRequest() )
+{
+
+}
+
+// retrieve SERVER variables
+$request->server->get('HTTP_HOST');
+
+// retrieves an instance of UploadedFile identified by foo
+$request->files->get('foo');
+
+// retrieve a COOKIE value
+$request->cookies->get('PHPSESSID');
+
+// retrieve an HTTP request header, with normalized, lowercase keys
+$request->headers->get('host');
+$request->headers->get('content_type');
+
+// GET, POST, PUT, DELETE, HEAD
+$request->getMethod(); 
+
+// an array of languages the client accepts
+$request->getLanguages(); 
+
+
+//redirection dans controller:
+return $this->redirect( $this->generateUrl('sdzblog_accueil',array('page' => 2)) );
+
+
+un service: est un script qui remplit un rôle précis et que l'on peut utiliser depuis notre contrôleur.
+-----------------------------------
+
+exemples:
+1// 
+$mailer = $this->get('mailer');
+// Création de l'e-mail : le service mailer utilise SwiftMailer, donc nous créons une instance de Swift_Message
+$message = \Swift_Message::newInstance()->setSubject('Hello zéro !')->setFrom('tutorial@symfony2.com')->setTo('votre@email.com')->setBody('Coucou, voici un email que vous venez de recevoir!');
+$mailer->send($message);
+
+2// 
+$templating = $this->get('templating');
+// On récupère le contenu de notre template
+$contenu = $templating->render('SdzBlogBundle:Blog:voir.html.twig');
+// On crée une réponse avec ce contenu et on la retourne
+return new Response($contenu);
+
+3//
+$session = $this->get('session');
+// On récupère le contenu de la variable user_id
+$user_id = $session->get('user_id');
+// On définit une nouvelle valeur pour cette variable user_id
+$session->set('user_id', 91);
+
+ou $session = $this->getRequest()->getSession();
+
+$this->get('session')->getFlashBag()->add('info', 'Article bien enregistré');
+//dans template:
+{% for message in app.session.flashbag.get('info') %}
+  <p>{{ message }}</p>
+{% endfor %}
+
+
+
+Template twig:
+-----------------------------------------------------------------------------------------
+Les templates vont nous permettre de séparer le code PHP du code HTML/XML/Text, etc.
+{{ … }} affiche quelque chose ;
+{% … %} fait quelque chose boucle , condition;
+{# … #} commentaires
+
+Concaténer: Identité : {{ nom ~ " " ~prenom }}
+les filtres:
+{{ var|upper }} Met toutes les lettres en majuscules.
+{{ var|striptags }} Supprime toutes les balises XML.
+{{ date|date('d/m/Y') }} formate la date
+{{texte|length }} retourne le nombre de caractères d'une chaîne.
+
+boucles:
+{% for membre in liste_membres %}{% endfor %}
+
+initialisation
+{% set foo = 'bar' %}
+
+//**************extend layout : ***********************/
+//app/Resources/views/layout.html.twig
+on définit le layout principal
+
+//src/Sdz/BlogBundle/Resources/views/layout.html.twig 
+layout de bundle: {% extends "::layout.html.twig" %}
+
+// src/Sdz/BlogBundle/Resources/views/Blog/index.html.twig
+View de fonction index de controller blog: {% extends "SdzBlogBundle::layout.html.twig" %}
+
+//render d'une view d'une fonction de controller
+{{ render(controller("SdzBlogBundle:Blog:menu")) }}
+
+
+-----------------Composer-----------------------------------------------/
+Composer est un outil pour gérer les dépendances d'un projet en PHP, qu'il soit sous Symfony2 ou non.
+Le fichier composer.json permet de lister les dépendances que doit inclure Composer dans votre projet.
+
+
+------------------Les services------------------------------------------/
+Un service est simplement un objet PHP qui remplit une fonction, associé à une configuration.
+Un service est donc un objet PHP qui a pour vocation d'être accessible depuis n'importe où dans votre code.
+un service est avant tout une simple classe.
+L'avantage de la programmation orientée services
+==> cela force à bien séparer chaque fonctionnalité de l'application
+Le conteneur de services organise et instancie tous vos services, grâce à leur configuration.
+Les services sont la base de Symfony2, et sont très utilisés par le c﻿oeur même du framework.
+
+L'injection de dépendances est assurée par le conteneur, qui connaît les arguments dont a besoin un service pour
+fonctionner, et les lui donne donc à sa création.
+
+Si vous avez généré votre bundle avec le generator en répondant « oui » pour créer toute la structure du bundle, alors
+ce fichier services.yml est chargé automatiquement.
+
+paramètre exp:
+# src/Sdz/BlogBundle/Resources/config/services.yml
+services:
+   sdz_blog.antispam:
+   class: Sdz\BlogBundle\Antispam\SdzAntispam
+
+// On récupère le service
+$antispam = $this->container->get('sdz_blog.antispam');
+if ($antispam->isSpam($text)) {
+  throw new \Exception('Votre message a été détecté comme spam!');
+}   
+
+-------------------------Metier la base de données----------------------------------------------/
+L'objectif d'un ORM (pour Object-Relation Mapper) est simple : se charger de
+l'enregistrement de vos données en vous faisant oublier que vous avez une base de données.
+Les annotations doivent respecter une syntaxe particulière "/** @ORM\Entity   **/ "
+une entité est un objet PHP qui correspond à un besoin dans votre application.
+
+==>php app/console doctrine:generate:entities
+   php app/console doctrine:schema:update --force
+   
+*Le service EntityManager:
+$em = $this->getDoctrine()->getManager();  ou $em = $this->get('doctrine.orm.entity_manager');
+
+*Les repositories:
+exp: $em->getRepository('SdzBlogBundle:Article');
+
+//sauvgarde:
+$em->persist($article);
+$em->flush();
+
+//update
+$em->flush();
+
+//remove
+$em->remove($article);
+$em->flush();
+
+Les différents types de relations: (une entité dite propriétaire, et une dite inverse)
+
+//**********Relation One-To-One: (exp Article --- Image)***************/
+Entité propriétaire Article:
+// src/Sdz/BlogBundle/Entity/Article.php
+/**
+ * @ORM\Entity
+ */
+class Article
+{
+/**
+ * @ORM\OneToOne(targetEntity="Sdz\BlogBundle\Entity\Image",cascade={"persist"})
+ */
+ private $image;
+ …
+}
+   Nb: cascade "persist":Cette option permet de « cascader » les opérations que l'on ferait sur l'entité Article
+   à l'entité Image liée par la relation. dans le persist et pour le remove aussi
+   
+Entité inverse, Image :
+// src/Sdz/BlogBundle/Entity/Image.php
+/**
+ * @ORM\Entity
+ */
+class Image
+{
+ // …
+}
+  puis php app/console doctrine:generate:entities SdzBlogBundle:Article  pour génerer le getter et setter
+  donc après: $url = $article->getImage()->getUrl();
+
+
+//**********Relation Many-To-One: (exp Article --- commentaires)***************/
+Entité propriétaire, Commentaire:
+// src/Sdz/BlogBundle/Entity/Commentaire.php
+/**
+ * @ORM\Entity
+ */
+class Commentaire
+{
+/**
+ * @ORM\ManyToOne(targetEntity="Sdz\BlogBundle\Entity\Article")
+ * @ORM\JoinColumn(nullable=false)
+ */
+  private $article;
+  …
+}
+
+Entité inverse, Article :
+// src/Sdz/BlogBundle/Entity/Article.php
+/**
+ * @ORM\Entity
+ */
+class Article
+{
+  // Nul besoin de rajouter de propriété, ici
+  // …
+}
+puis: php app/console doctrine:generate:entities SdzBlogBundle:Commentaire
+
+
+//**********Relation Many-To-Many n..n: (exp Categories --- Articles)***************/
+Entité propriétaire, Article:
+// src/Sdz/BlogBundle/Entity/Article.php
+/**
+ * @ORM\Entity
+ */
+class Article
+{
+/**
+* @ORM\ManyToMany(targetEntity="Sdz\BlogBundle\Entity\Categorie",cascade={"persist"})
+*/
+private $categories;
+// …
+}
+Entité inverse, Categorie
+// src/Sdz/BlogBundle/Entity/Categorie.php
+/**
+ * @ORM\Entity
+ */
+class Categorie
+{
+  // …
+}
+
+//****************************DQL****************************************************************//
+exp1:
+
+$queryBuilder = $this->createQueryBuilder('a');
+// Méthode équivalente, mais plus longue :
+$queryBuilder = $this->_em->createQueryBuilder()->select('a')->from($this->_entityName, 'a');
+
+// Dans un repository, $this->_entityName est le namespace de l'entité gérée
+// Ici, il vaut donc Sdz\BlogBundle\Entity\Article
+// On a fini de construire notre requête
+// On récupère la Query à partir du QueryBuilder
+$query = $queryBuilder->getQuery();
+// On récupère les résultats à partir de la Query
+$resultats = $query->getResult();
+// On retourne ces résultats
+return $resultats;
+
+exp2:
+$qb = $this->createQueryBuilder('a');
+$qb->where('a.auteur = :auteur')
+->setParameter('auteur', $auteur)
+->andWhere('a.date < :annee')
+->setParameter('annee', $annee)
+->orderBy('a.date', 'DESC');
+return $qb->getQuery()
+->getResult();
+
+
+//****************************les evenements****************************************************************//
+/**
+*@ORM\Entity(repositoryClass="Sdz\BlogBundle\Entity\CommentaireRepository")
+* @ORM\HasLifecycleCallbacks()
+*/
+class Commentaire
+{
+/**
+* @ORM\prePersist
+*/
+public function increase()
+{
+$nbCommentaires = $this->getArticle()->getNbCommentaires();
+$this->getArticle()->setNbCommentaires($nbCommentaires+1);
+}
+/**
+* @ORM\preRemove
+*/
+public function decrease()
+{
+$nbCommentaires = $this->getArticle()->getNbCommentaires();
+$this->getArticle()->setNbCommentaires($nbCommentaires-1);
+}
+
+}
+
+Les évènements permettent de centraliser du code répétitif, afin de systématiser leur exécution et de réduire la duplication
+de code.
+Plusieurs évènements jalonnent la vie d'une entité, afin de pouvoir exécuter une fonction aux endroits désirés.
+Les extensions permettent de reproduire des comportements communs dans une application, afin d'éviter de réinventer la roue.
+
+
+/*************************service Validator***************************************************************************/
+************validation entity*************************
+1//Entity
+use Symfony\Component\Validator\Constraints as Assert;
+class Author
+{
+    /**
+     * @Assert\NotBlank()
+     */
+    public $name;
+}
+2//controller
+use Acme\BlogBundle\Entity\Author;
+// ...
+
+public function indexAction()
+{
+    $author = new Author();
+    // ... do something to the $author object
+
+    $validator = $this->get('validator');
+    $errorList = $validator->validate($author);
+
+    if (count($errorList) > 0) {
+        return new Response(print_r($errorList, true));
+    } else {
+        return new Response('The author is valid! Yes!');
+    }
+}
+****************************validation formulaire******************
+use Acme\BlogBundle\Entity\Author;
+use Acme\BlogBundle\Form\AuthorType;
+use Symfony\Component\HttpFoundation\Request;
+
+public function updateAction(Request $request)
+{
+    $author = new Author();
+    $form = $this->createForm(new AuthorType(), $author);
+
+    $form->handleRequest($request);
+
+    if ($form->isValid()) {
+        // the validation passed, do something with the $author object
+
+        return $this->redirect($this->generateUrl(...));
+    }
+
+    return $this->render('BlogBundle:Author:form.html.twig', array(
+        'form' => $form->createView(),
+    ));
+}
+
+
+/*******************************************relations entities*****************************************************************/
+
+Relation OneToMany
+--------------------------------------
+Desk => à plusieurs Deskcomment
+Entity Desk.php
+/**
+* @ORM\OneToMany(targetEntity="DeskComment", mappedBy="desk", cascade={"remove", "persist"})
+*/
+protected $comments;
+
+Entity DeskComent.php
+/**
+* @ORM\ManyToOne(targetEntity="Desk", inversedBy="comments", cascade={"remove"})
+* @ORM\JoinColumn(name="desk_id", referencedColumnName="id")
+*/
+protected $desk;
+
+
+     |------Desk--------|                |--------DeskComment-------|
+	 |id                |                | id                       |
+	 |nom               |                |comment                   |
+	 |------------------|                |desk_id                   |
+	                                     |--------------------------|
+puis=> php app/console doctrine:generate:entities
+dans Desk.php:
+public function __construct()
+{ $this->comments = new \Doctrine\Common\Collections\ArrayCollection();}
+/**
+* Add comments
+*
+* @param \Wmd\WatchMyDeskBundle\Entity\DeskComment $comments
+*/
+public function addDeskComment(\Wmd\WatchMyDeskBundle\Entity\DeskComment $comments)
+{$this->comments[] = $comments;}
+/**
+* Get comments
+*
+* @return \Doctrine\Common\Collections\Collection
+*/
+public function getComments()
+{return $this->comments;}
+/**
+* Set comments
+*
+* @param \Doctrine\Common\Collections\Collection $comments
+*/
+public function setDeskComment(\Doctrine\Common\Collections\Collection $comments)
+{$this->comments = $comments;}		
+
+Et dans DeskComment.php:
+/**
+ Set desk
+*
+* @param \Wmd\WatchMyDeskBundle\Entity\Desk $desk
+*/
+public function setDesk(\Wmd\WatchMyDeskBundle\Entity\Desk $desk)
+{$this->desk = $desk;}
+/**
+* Get desk
+*
+* @return \Wmd\WatchMyDeskBundle\Entity\Desk
+*/
+public function getDesk()
+{return $this->desk;} 								 
+
+
+
+Relation OneToOne
+--------------------------------------
+Imaginons que notre entité Desk dispose d'une relation OneToOne avec une entité Case (Boitier). 
+Un bureau ne peux avoir qu'un seul boitier et ce boitier est unique, ne peux appartenir à plusieurs bureaux. Nous avons donc une relation en OneToOne. 
+Il est possible de créer une relation unidirectionnelle en OneToOne comme ceci: 
+
+Desk.php 
+Code php:
+/**
+* @ORM\OneToOne(targetEntity="Case")
+* @ORM\JoinColumn(name="case_id", referencedColumnName="id")
+*/
+private $case;
+
+Pas besoin de lier l'entité Case si vous souhaitez de l'unidirectionnel. Mais si vous voulez la version bidirectionnelle, il faut ajouter la relation dans Case: 
+Code php:
+/**
+* @ORM\OneToOne(targetEntity="Desk", mappedBy="case")
+*/
+private $desk;
+
+
+
+Relation ManyToMany
+--------------------------
+Prenons pour exemple l'entité Desk et une entité Tag. Un bureau peut être caractérisé par plusieurs tags et un tag peut être associé à plusieurs bureaux. On a donc à faire à une relation ManyToMany. 
+Voici comment la mettre en place avec les annotations: 
+
+Desk.php 
+Code php:
+/**
+* @ORM\ManyToMany(targetEntity="Tag", inversedBy="desks")
+* @ORM\JoinTable(name="desk_tags")
+*/
+private $tags;
+
+public function __construct() {
+ $this->tags = new \Doctrine\Common\Collections\ArrayCollection();
+}
+
+Tag.php 
+Code php:
+/**
+* @ORM\ManyToMany(targetEntity="Desk", mappedBy="tags")
+*/
+private $desks;
+
+public function __construct() {
+ $this->desks = new \Doctrine\Common\Collections\ArrayCollection();
+}
+
+
+/****************************************overide template widget formulaire***********************************/
+Méthode 1: Dans le même template que le formulaire
+----------------------------------------------------------------
+{% extends '::base.html.twig' %}
+{% form_theme form _self %}
+{% block integer_widget %}
+    <div class="integer_widget">
+        {% set type = type|default('number') %}
+        {{ block('form_widget_simple') }}
+    </div>
+{% endblock %}
+
+{% block content %}
+    {{ form_row(form.age) }}
+{% endblock %}
+
+Méthode 2: Dans un template séparé
+----------------------------------------------------------------
+{# src/Acme/DemoBundle/Resources/views/Form/fields.html.twig #}
+{% block integer_widget %}
+    <div class="integer_widget">
+        {% set type = type|default('number') %}
+        {{ block('form_widget_simple') }}
+    </div>
+{% endblock %}
+
+{% form_theme form 'AcmeDemoBundle:Form:fields.html.twig' %}
+
+{{ form_widget(form.age) }}
+
+Faire des personnalisations au niveau de l'application
+---------------------------------------------------------------
+# app/config/config.yml
+twig:
+    form:
+        resources:
+            - 'AcmeDemoBundle:Form:fields.html.twig'
+
+/*************************************************************************************************************/
+
+/************************Event Listener***********************************************************************/
+Event sur Security
+Service:
+    cbank.security.authentication_failure_event_listener:
+            class: CBank\CentralBundle\Handler\AuthenticationListener
+            arguments: ["@security.context", "@router","@event_dispatcher"]
+            tags:
+                - { name: kernel.event_listener, event: security.authentication.failure, method: onAuthenticationFailure }
+
+    cbank.security.interactive_login_listener:
+            class: CBank\CentralBundle\Handler\AuthenticationListener
+            arguments: ["@security.context", "@router","@event_dispatcher"]
+            tags:
+                - { name: kernel.event_listener, event: security.interactive_login, method: onAuthenticationSucces }
+
+// AuthenticationListener.php
+namespace CBank\CentralBundle\Handler;
+use Symfony\Component\Security\Core\Event\AuthenticationFailureEvent;
+use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Security\Core\SecurityContextInterface;
+use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
+use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
+use Symfony\Component\Routing\Router;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\HttpKernel\KernelEvents;
+
+class AuthenticationListener
+{
+
+    protected $securityContext;
+    protected $router;
+    protected $dispatcher;
+
+    public function __construct( $securityContext, $router,  $dispatcher)
+    {
+        $this->securityContext = $securityContext;
+        $this->router = $router;
+        $this->dispatcher = $dispatcher;
+    }
+
+    /**
+     * onAuthenticationFailure
+     *
+     * @author  Salem Said <salem.said@proxym-it.com>
+     * @param  AuthenticationFailureEvent $event
+     */
+    public function onAuthenticationFailure( AuthenticationFailureEvent $event )
+    {
+
+    }
+
+    /**
+     * onAuthenticationSuccess
+     *
+     * @author  Salem Said <salem.said@proxym-it.com>
+     * @param  InteractiveLoginEvent $event
+     */
+    public function onAuthenticationSucces( InteractiveLoginEvent $event )
+    {
+        $this->dispatcher->addListener(KernelEvents::RESPONSE, array($this, 'redirectUserToProfilePage'));
+    }
+
+    public function redirectUserToProfilePage(FilterResponseEvent $event)
+    {
+        $response = new RedirectResponse($this->router->generate('communicationplan'));
+        $event->setResponse($response);
+    }
+}
+
+		
+
+Event sur Kernel
+-----------------------
+my.handler.session_idle:
+            class: CBank\CentralBundle\Handler\SessionIdleHandler
+            arguments: ["@session", "@security.context", "@router", %session_max_idle_time% ,@service_container]
+            tags:
+                - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
+				
+				
+<?php
+
+namespace CBank\CentralBundle\Handler;
+
+use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\Security\Core\SecurityContextInterface;
+
+class SessionIdleHandler
+{
+
+    protected $session;
+    protected $securityContext;
+    protected $router;
+    protected $maxIdleTime;
+
+    public function __construct(SessionInterface $session, SecurityContextInterface $securityContext, RouterInterface $router, $maxIdleTime = 0, $container)
+    {
+        $this->session = $session;
+        $this->securityContext = $securityContext;
+        $this->router = $router;
+        $this->maxIdleTime = $maxIdleTime;
+        $this->container = $container;
+    }
+
+    public function onKernelRequest(GetResponseEvent $event)
+    {
+        if (HttpKernelInterface::MASTER_REQUEST != $event->getRequestType()) {
+
+            return;
+        }
+
+        if ($this->maxIdleTime > 0) {
+
+            $this->session->start();
+            $lapse = time() - $this->session->getMetadataBag()->getLastUsed();
+
+            if ($lapse > $this->maxIdleTime) {
+
+                $this->securityContext->setToken(null);
+                $this->session->getFlashBag()->set('info', 'You have been logged out due to inactivity.');
+
+                // Change the route if you are not using FOSUserBundle.
+                $event->setResponse(new RedirectResponse($this->router->generate('fos_user_security_login')));
+            }
+        }
+    }
+
+}
+/**************************************************************************************************************/
+/**************************ajax faye***************************************************************************/
+
+controller : yab3eth lel faye  un message
+view : ta3mel subscribe 3al chanel wta9ra el message
+
+inversement
+
+view: yab3eth bel publish  lel faye  
+fil view : el client connecté sur le chanel ya9ra el message ali yab3thoulou el faye.
+
+client.subscribe('/editPlan', function (message) {
+        $.ajax({
+            type: 'POST',
+            processData: true,
+            url: Routing.generate('session_add_plan', { 'id': message.id, 'userId': message.IdUser }),
+            dataType: 'json',
+            success: function(data){
+                if('communicationplan' == '{{ app.request.get('_route') }}'){
+                    $("#edit_" +  message.id ).attr("href", "#");
+                    $("#edit_" +  message.id).addClass('disabled');
+                    $("#delete_" +  message.id ).attr("href", "#");
+                    $("#delete_" +  message.id).addClass('disabled');
+                }
+            }
+        });
+        
+    });
+/*****************************truc*********************************************************************************/
+query_builder dans un Form:
+$builder
+            ->add('name')
+            ->add('projectManager', 'entity', array(
+                'class' => 'pxUserBundle:User',
+                'property' => 'username',
+                'required'    => false,
+                'query_builder' => function(EntityRepository $ur) {
+                    return $ur->getUserByRole('ROLE_PROJECT_MANAGER')
+                        ;
+                },
+            ))
+function de repository:
+/**
+     * get User By Role
+     */
+    public function getUserByRole($role){
+
+        $qb = $this->createQueryBuilder('u')
+            ->where('u.roles LIKE :roles')
+            ->setParameter('roles', '%"' . $role . '"%')
+
+           ;
+        return $qb;
+    }
+
+
+			
+			
+			
+best bundle:
+ http://jmsyst.com/bundles/JMSSerializerBundle
+ https://github.com/nelmio/NelmioCorsBundle
+ https://github.com/FriendsOfSymfony/FOSJsRoutingBundle
+ https://github.com/willdurand/BazingaJsTranslationBundle/blob/master/Resources/doc/index.md
+ 
+ /*****Listners**************************************************************/
+*** un service qui écoute un évènement s'appelle un listener 
+•kernel.request: Cet évènement est déclenché très tôt dans l'exécution d'une page, 
+                 avant même que le choix du contrôleur à exécuter ne soit fait
+				  class GetResponseEvent
+					{
+					  public function getResponse();
+					  public function setResponse(Response $response);
+					  public function hasResponse();
+					  public function getKernel();
+					  public function getRequest();
+					  public function getRequestType();
+					  public function getDispatcher();
+					  public function isPropagationStopped();
+					  public function stopPropagation();
+					}
+
+• kernel.controller: Cet évènement est déclenché après que le contrôleur à exécuter a été défini,
+                     mais avant de l'exécuter effectivement.
+					 class FilterControllerEvent
+					{
+					  public function getController();
+					  public function setController($controller);
+					  public function getKernel();
+					  public function getRequest();
+					  public function getRequestType();
+					  public function getDispatcher();
+					  public function isPropagationStopped();
+					  public function stopPropagation();
+					}
+
+• kernel.view: Cet évènement est déclenché lorsqu'un contrôleur n'a pas retourné d'objet Response
+
+• kernel.response: Cet évènement est déclenché après qu'un contrôleur a retourné un objet Response ;
+				class FilterResponseEvent
+				{
+				  public function getControllerResult();
+				  public function getResponse();
+				  public function setResponse(Response $response);
+				  public function hasResponse();
+				  public function getKernel();
+				  public function getRequest();
+				  public function getRequestType();
+				  public function getDispatcher();
+				  public function isPropagationStopped();
+				  public function stopPropagation();
+				}
+
+• kernel.terminate: This event happens after the response has been sent
+out. It can be used to perform any time-consuming operations that are not
+necessary to generate the response.
+
+• kernel.exception: Cet évènement est déclenché lorsqu'une exception est levée.
+
+
+/***************************custom field*****************************************************************/
+# app/config/config.yml
+parameters:
+    genders:
+        m: Male
+        f: Female
+# src/Acme/DemoBundle/Resources/config/services.yml
+services:
+    acme_demo.form.type.gender:
+        class: Acme\DemoBundle\Form\Type\GenderType
+        arguments:
+            - "%genders%"
+        tags:
+            - { name: form.type, alias: gender }
+
+
+			
+// src/Acme/DemoBundle/Form/Type/GenderType.php
+namespace Acme\DemoBundle\Form\Type;
+
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Form\AbstractType;
+
+class GenderType extends AbstractType
+{
+    private $genderChoices;
+
+    public function __construct(array $genderChoices)
+    {
+        $this->genderChoices = $genderChoices;
+    }
+
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults(array(
+            'choices' => $this->genderChoices,
+        ));
+    }
+
+     public function getParent()
+    {
+        return 'choice';
+    }
+
+    public function getName()
+    {
+        return 'gender';
+    }
+}
+
+// src/Acme/DemoBundle/Form/Type/AuthorType.php
+namespace Acme\DemoBundle\Form\Type;
+
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
+
+class AuthorType extends AbstractType
+{
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder->add('gender_code', 'gender', array(
+            'empty_value' => 'Choose a gender',
+        ));
+    }
+}
+
+# app/config/config.yml
+twig:
+    form:
+        resources:
+            - 'AcmeDemoBundle:Form:fields.html.twig'
+
+
+{# src/Acme/DemoBundle/Resources/views/Form/fields.html.twig #}
+{% block gender_widget %}
+    {% spaceless %}
+        {% if expanded %}
+            <ul {{ block('widget_container_attributes') }}>
+            {% for child in form %}
+                <li>
+                    {{ form_widget(child) }}
+                    {{ form_label(child) }}
+                </li>
+            {% endfor %}
+            </ul>
+        {% else %}
+            {# just let the choice widget render the select tag #}
+            {{ block('choice_widget') }}
+        {% endif %}
+    {% endspaceless %}
+{% endblock %}
+/*******************************************export csv:***************************************************************************/
+
+repository:
+------------------------------------------------------------------------
+ public function findAllDoctors($offset, $limit){
+  return $this->createQueryBuilder('d')
+          ->select('d.riziv, d.language, d.title, d.lastName, d.firstName, d.speciality, d.zip, d.city, d.country, d.email, d.univadisOptin, d.mcmOptin, d.platformOptin')
+       ->getQuery()
+       ->setFirstResult( $offset )
+             ->setMaxResults( $limit )
+     ->getResult();
+  
+ }
+Controller export Action
+----------------------------------------
+public function exportAction() {
+     $now = new \DateTime('now');
+     $em = $this->getDoctrine()->getManager();
+     
+        $response = new StreamedResponse();
+        $response->setCallback(
+            function () use ($em) {
+          $total = $em->getRepository('PlannetCentralBundle:Doctor')->getCount();
+          $header = array('INAMI', 'Language', 'Title', 'LastName', 'FirstName', 'Specialty', 'ZIP', 'City', 'Country', 'Email', 'Univadis_Optin', 'MCM_Optin', 'Platform_Optin');
+                $handle = fopen('php://output', 'r+');
+                fputcsv($handle, $header,";");
+                $row = 1;
+                while($total>=0)
+                {
+                 $doctors = $em->getRepository('PlannetCentralBundle:Doctor')->findAllDoctors(($row-1)*10,10);
+                 foreach ($doctors as $doctor) {
+                  $doctor['univadisOptin'] = ($doctor['univadisOptin'] == 1)?'YES':'NO';
+                  $doctor['mcmOptin'] = ($doctor['mcmOptin'] == 1)?'YES':'NO';
+                  $doctor['platformOptin'] = ($doctor['platformOptin'] == 1)?'YES':'NO';
+                     fputcsv($handle, $doctor,";");
+                 }
+                 $total-=10;
+                 $row++;
+                }
+                fclose($handle);
+            }
+        );
+        
+        $response->headers->set('Content-Type', 'application/force-download');
+        $response->headers->set('Content-Disposition', 'attachment; filename="doctors_export_'.$now->format('Y-m-d_H-i-s').'".csv"');
+     return $response;
+    }
+	
+/////////////////////////////////get from repository//////////////////////////////////////
+$repository = $this->getDoctrine()->getRepository('AcmeStoreBundle:Product');
+// query by the primary key (usually "id")
+$product = $repository->find($id);
+
+// dynamic method names to find based on a column value
+$product = $repository->findOneById($id);
+$product = $repository->findOneByName('foo');
+
+// find *all* products
+$products = $repository->findAll();
+
+// find a group of products based on an arbitrary column value
+$products = $repository->findByPrice(19.99);
+
+// query for one product matching by name and price
+$product = $repository->findOneBy(
+array('name' => 'foo', 'price' => 19.99)
+);
+// query for all products matching the name, ordered by price
+$products = $repository->findBy(
+array('name' => 'foo'),
+array('price' => 'ASC')
+);
+
+////////////////function dans repository///////////////////////////////////
+class ProductRepository extends EntityRepository
+{
+	public function findAllOrderedByName()
+	{
+	return $this->getEntityManager()->createQuery(
+	'SELECT p FROM AcmeStoreBundle:Product p ORDER BY p.name ASC'
+	)->getResult();
+	}
+}
+
+// déclarer annotation
+<?php
+use Doctrine\ORM\Mapping as ORM;
+/**
+ * @ORM\Annotation()
+ */
+ 
+ 
+ //installer les asset
+ Utilisez le lien symbolique plutôt que la copie, comme ceci:
+
+app/console assets:install --symlink web
+assetic:dump --watch
+
+
+///////////////
+Question : Pourquoi dans un template Twig, mon {% render ... %} ne m'affiche pas le résultat de ma méthode ?
+
+Réponse :
+Quand vous appelez une méthode depuis Twig directement, il faut que vous retourniez le résultat avec la classe Response :
+
+use Symfony\Component\HttpFoundation\Response;
+ 
+public function xxx()
+{
+   // ...
+ 
+   return new Response('Mon résultat');
+}
+
+//////////////////////////////////////
+Citation
+
+Quand je persiste une entité qui embarque d'autres entités, celles qui sont embarquées ne sont pas persistées, malgré cascade={"persist"}. Pourquoi ?
+Quand je persiste une entité qui embarque d'autres entités, la liaison n'est pas enregitrée, malgré cascade={"persist"}, j'ai ma clé étrangère qui est vide. Pourquoi ?
+
+Réponse :
+Dans le cas de relations *ToMany, il faut rendre plus forte la liaison dans la classe parent, et ajouter un peu de traitement dans la méthode d'ajout (add*), puis l'appeler dans la méthode de définition (set*) si vous l'avez. Pour suivre l'exemple utilisé ci-dessus, voici à quoi vont ressembler les mutateurs dans Article :
+
+public function setTags($tags)
+{
+    foreach ($tags as $tag) {
+        $this->addTag($tag);
+    }
+ 
+    return $this;
+}
+ 
+public function addTag($tag)
+{
+    // L'ordre de ces deux lignes est important !
+    $tag->setArticle($this);
+    $this->articles[] = $tag;
+ 
+    return $this;
+}
+
+
+//////////////////////////////////////////////
+<?php $this->get('session')->getFlashBag()->add(/* … */)
+<?php $this->get('session')->getFlashBag()->get('name')
+{{ app.session.flashbag }}
+{% for type, flashMessages in app.session.flashbag.all() %}
+    {% for flashMessage in flashMessages %}
+        <div class="flash-{{ type }}">
+            {{ flashMessage }}
+        </div>
+    {% endfor %}
+{% endfor %}
+Pour n'afficher que les messages d'un type, le code est le suivant (c'était impossible dans Symfony 2.0.x)
+{% for flashMessage in app.session.flashbag.get('notice') %}
+    <div class="flash-notice">
+        {{ flashMessage }}
+    </div>
+{% endfor %}
+----------------------------------------------------------------------------------------------------------------------
+
+Les variables globales Twig:
+*{{ app.request }}
+La requête « request » qu'on a vu au chapitre précédent sur les contrôleurs.
+*{{ app.session }}
+Le service « session » qu'on a vu également au chapitre précédent.
+*{{ app.environment }}
+L'environnement courant : « dev », « prod », et ceux que vous avez définis.
+*{{ app.debug }}
+True si le mode debug est activé, False sinon.
+*{{ app.security }}
+Le service « security », que nous verrons plus loin dans ce cours.
+*{{ app.user }}
+L'utilisateur courant, que nous verrons également plus loin dans ce cours.
+-------------------------------------------------------------------------------------------------------------------
+déclarations de variables globales dans twig:
+
+twig:
+    globals:
+        webmaster: moi-même
+		
+<footer>Responsable du site : {{ webmaster }}.</footer>		
+--------------------------------------------------------------------------------------------------------------
+test utiles twig:
+
+{% if var is defined %} … {% endif %}
+Équivalent PHP :
+<?php if(isset($var)) { }
+
+Even / Odd:
+{% for valeur in liste %}
+  <span class="{% if loop.index is even %}pair{% else %}
+    impair{% endif %}">
+    {{ valeur }}
+  </span>
+{% endfor %}
+----------------------------------------------------------------------------------------------------------------
+inclure une partie dans twig:
+{{ include("OCPlatformBundle:Advert:form.html.twig") }}
+
+render de controller:
+{{ render(controller("OCPlatformBundle:Advert:menu")) }}  si > symfony 2.2
+{% render "OCPlatformBundle:Advert:menu" %}  si < symfony 2.2
+
+
+----------------------------------------------------------------------------------------------------------------
+{# src/OC/PlatformBundle/Resources/view/Advert/view.html.twig #}
+
+{% if not advert.categories.empty %}
+  <p>
+    Cette annonce est parue dans les catégories suivantes :
+    {% for category in advert.categories %}
+      {{ category.name }}{% if not loop.last %}, {% endif %}
+    {% endfor %}
+  </p>
+{% endif %}
+
+--------------------------------------------------------------------------------------------------
+
+
+
+récupération de resultat depuis repository en utilisant ORM doctrine2:
+---------------------------
+find($id)
+
+findAll()
+
+findBy(
+  array $criteria,
+  array $orderBy = null,
+  $limit  = null,
+  $offset = null
+);
+
+findOneBy(array('author' => 'Marine'))
+
+findByX($valeur)
+
+findOneByX($valeur)
+
+*dans un repository:
+public function myFindAll()
+{
+  return $this
+    ->createQueryBuilder('a')
+    ->getQuery()
+    ->getResult()
+  ;
+}
+* Depuis un contrôleur
+
+public function testAction()
+{
+  $repository = $this
+    ->getDoctrine()
+    ->getManager()
+    ->getRepository('OCPlatformBundle:Advert');
+  
+  $listAdverts = $repository->myFindAll();
+
+}
+*autre foncion dans le repository:
+public function myFindOne($id)
+{
+ return $this->createQueryBuilder('a')
+              ->where('a.id = :id')
+              ->setParameter('id', $id)
+              ->getQuery()
+              ->getResult();
+}
+
+public function findByAuthorAndDate($author, $year)
+{
+  return $this->createQueryBuilder('a')
+               ->where('a.author = :author')
+              ->setParameter('author', $author)
+              ->andWhere('a.date < :year')
+              ->setParameter('year', $year)
+              ->orderBy('a.date', 'DESC')
+              ->getQuery()
+              ->getResult();
+}
+
+le get result:
+------------------
+getResult(): retourne une seul résultat mais dans un tableau
+getArrayResult():retourne un tableau contenant les résultats sous forme de tableaux
+getScalarResult():Exécute la requête et retourne un tableau contenant les résultats sous forme de valeurs
+getOneOrNullResult():Exécute la requête et retourne un seul résultat, ou null si pas de résultat
+getSingleResult(): Exécute la requête et retourne un seul résultat. Cette méthode est exactement la même que getOneOrNullResult(), sauf qu'elle déclenche une exception Doctrine\ORM\NoResultException si aucun résultat.
+getSingleScalarResult():Exécute la requête et retourne une seule valeur, et déclenche des exceptions si pas de résultat ou plus d'un résultat.
+
+
+// Cette méthode est utilisée principalement pour exécuter des requêtes qui ne retournent pas de résultats (des UPDATE, INSERT INTO, etc.) 
+$qb->getQuery()->execute();
+
+utilisation de DQL:
+----------------------------------------------------------------------
+// Depuis un repository
+public function myFindAllDQL()
+{
+  $query = $this->_em->createQuery('SELECT a FROM OCPlatformBundle:Advert a');
+  $results = $query->getResult();
+  return $results;
+}
+public function myFindDQL($id)
+{
+  $query = $this->_em->createQuery('SELECT a FROM Advert a WHERE a.id = :id');
+  $query->setParameter('id', $id);
+  return $query->getSingleResult();
+}
+
+Utiliser les jointures dans nos requêtes:
+-----------------------------------------------------------------------------------------------
+Advert est relié a application, donc pour récuperé les applications relié a advert dans la méme résultat
+public function getAdvertWithApplications()
+{
+  $qb = $this
+    ->createQueryBuilder('a')
+    ->leftJoin('a.applications', 'app')
+    ->addSelect('app') ;
+  return $qb
+    ->getQuery()
+    ->getResult();
+}
+*jointure avec condition:
+----------------------------------------
+ $qb = $this
+    ->createQueryBuilder('a')
+    ->join('a.applications', 'app', 'WITH', 'YEAR(app.date) > 2013')
+	 ->addSelect('app') ;
+  return $qb
+    ->getQuery()
+    ->getResult();
+	
+	==>équivalent à SELECT *
+     FROM Advert a
+     JOIN Application app ON (app.advert_id = a.id AND YEAR(app.date) > 2013)
+	 
+depuis le controller mnt:
+----------------------------
+public function listAction()
+{
+  $listAdverts = $this
+    ->getDoctrine()
+    ->getManager()
+    ->getRepository('OCPlatformBundle:Advert')
+    ->getAdvertWithApplications();
+
+  foreach ($listAdverts as $advert) {
+    // Ne déclenche pas de requête : les candidatures sont déjà chargées !
+    // Vous pourriez faire une boucle dessus pour les afficher toutes
+    $advert->getApplications();
+  }
+  
+  
+récupération USER: 
+--------------------------------------------------
+*Depuis le contrôleur ou un service
+// On récupère le service
+$security = $container->get('security.context');
+
+// On récupère le token
+$token = $security->getToken();
+
+// Si la requête courante n'est pas derrière un pare-feu, $token est null
+
+// Sinon, on récupère l'utilisateur
+$user = $token->getUser();
+
+// Si l'utilisateur courant est anonyme, $user vaut « anon. »
+
+// Sinon, c'est une instance de notre entité User, on peut l'utiliser normalement
+$user->getUsername();
+
+*Depuis Twig
+Bonjour {{ app.user.username }} - {{ app.user.email }}
+
+
+
+Tester les rôles de l'utilisateur
+--------------------------------------------------
+1-Utiliser directement le service security.context:
+    // On vérifie que l'utilisateur dispose bien du rôle ROLE_AUTEUR
+    if (!$this->get('security.context')->isGranted('ROLE_AUTEUR')) {
+      // Sinon on déclenche une exception « Accès interdit »
+      throw new AccessDeniedException('Accès limité aux auteurs.');
+    }
+	
+2-Utiliser les annotations dans un contrôleur
+  // N'oubliez pas ce use pour l'annotation
+  use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security; 
+ /**
+   * @Security("has_role('ROLE_AUTEUR')")
+   */
+  public function addAction(Request $request)
+  {
+    // Plus besoin du if avec le security.context, l'annotation s'occupe de tout !
+    // Dans cette méthode, vous êtes sûrs que l'utilisateur courant dispose du rôle ROLE_AUTEUR
+  }
+  
+3-Depuis une vue Twig:
+{# On n'affiche le lien « Ajouter une annonce » qu'aux auteurs  (et admins, qui héritent du rôle auteur) #}
+{% if is_granted('ROLE_AUTEUR') %}
+  <li><a href="{{ path('oc_platform_add') }}">Ajouter une annonce</a></li>
+{% endif %}
+
+4-Utiliser les contrôles d'accès:
+# app/config/security.yml
+security:
+    access_control:
+        - { path: ^/admin, roles: ROLE_ADMIN }
+		
+security:
+    access_control:
+        - { path: ^/admin, ip: 127.0.0.1, requires_channel: https }		
+
+
+		
+---------------------------------------------------------------------------------------
+# Dans un catalogue
+advert:
+    edit:
+        title:         Édition d'une annonce
+        submit_button: Valider
+    show:
+        edit_button:   Éditer l'annonce
+        create_button: Créer une nouvelle annonce
+		
+		
+translation in twig:
+  <p>{{ message|trans }}</p>
+  <button>{{ 'cancel'|trans }}</button>
+  <button>{{ 'validate'|trans }}</button>
+  
+   {% trans %}Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur
+  metus nulla. Cras sit amet magna quam, sed consectetur odio. Vestibulum feugiat
+  justo at orci luctus cursus.{% endtrans %}
+  
+  translation in controller:
+  // On récupère le service translator
+$translator = $this->get('translator');
+
+// Pour traduire dans la locale de l'utilisateur :
+$texteTraduit = $translator->trans('Mon message à inscrire dans les logs');
+
+Utiliser les domaines:
+Balise : {% trans from 'domaine' %}chaîne{% endtrans %}.
+Filtre : {{ 'chaîne'|trans({}, 'domaine' }}.
+Service : $translator->trans('chaîne', array(), 'domaine').
+
+
+/******************************************Doctrine***********************************************/
+La méthode findAll()
+La méthode "findAll" permet de récuperer l'intégralité des éléments stockés en base.
+Cette méthode ne prend pas de paramètre et vous retournera un tableau d'objet.
+1
+$entities = $em->getRepository('ActualitesBundle:Actualites')->findAll();
+Attention, je vous conseille d'utiliser cette méthode uniquement si vous n'avez pas beaucoup
+de données à récuperer, car elle pourrait s'avérer trop groumande en ressource.
+Cependant vous pouvez toujours paginer vos résultats afin de palier ce problème.
+ 
+La méthode findBy()
+La méthode "findBy" permet de récuperer des éléments stockés en base selon certains critères
+qui seront passés en paramètre.
+Pour cette méthode vous avez la possibilité de passer les paramètres suivants :  
+Le ou les critères devront être passsé via un tableau.
+
+findBy(array('categorie' => 'PHP', 'auteur' => 'Benjamin'));
+ 
+Vous pouvez trier également l'affichage de vos données
+
+findBy(array('categorie' => 'PHP', 'auteur' => 'Benjamin'),
+       array('titre' => 'ASC')); //
+ 
+La limite peut également être fixée
+
+findBy(array('categorie' => 'PHP', 'auteur' => 'Benjamin'),
+       array('titre' => 'ASC'),
+       10); //
+ 
+Qui dit limite dit offset 
+
+findBy(array('categorie' => 'PHP', 'auteur' => 'Benjamin'),
+       array('titre' => 'ASC'),
+       10,
+       5); //
+De cette façon vous pourrez faire un système de pagination simplement.
+Cette méthode vous retournera un tableau d'objet.
+ 
+La méthode findOneBy()
+Cette méthode vous servira à afficher qu'un seul résultat en fonction d'un ou plusieurs critères qui lui sera passé en paramètre.
+Le ou les critères devront être passsé via un tableau.
+
+findOneBy(array('categorie' => 'PHP', 'auteur' => 'Benjamin'));
+ 
+La méthode ne prend aucun autres paramètre et vous retournera un objet si résultat il y a.
+ 
+La méthode find()
+La méthode find est particulièrement utile pour récuperer un objet à partir de sa clé primaire.
+Cette méthode nécéssite de passer un ID en paramètre. 
+
+find($id);
+ 
+Je vous invite à toujours vérifier si cette méthode vous retourne un objet ou non
+avant tout traitement. Cela vous évitera bien des erreurs. 
+
+if (!$entity) {
+    throw $this->createNotFoundException('La page n\'existe pas.');
+}
