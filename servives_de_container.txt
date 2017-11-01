@@ -1,0 +1,34 @@
+doctrine.orm.entity_manager
+Ce service est l'instance de l'EntityManagerde Doctrine ORM. 
+
+event_dispatcher
+Ce service donne accès au gestionnaire d'évènements. 
+
+kernel
+Ce service vous donne accès au noyau de Symfony. 
+
+logger
+Ce service gère les logs de votre application. Grâce à lui, vous pouvez utiliser des fichiers de logs très simplement.
+Symfony utilise la classe Monolog par défaut pour gérer ses logs. 
+
+mailer
+Ce service vous renvoie par défaut une instance de Swift_Mailer, une classe permettant d'envoyer des e-mails facilement.
+
+request_stack
+Ce service est très important : il vous donne un object qui vous permet de récupérer la requête Request courante via sa méthode getCurrentRequest.
+
+router
+Ce service vous donne accès au routeur (Symfony\Component\Routing\Router).
+
+security.context
+Ce service permet de gérer l'authentification sur votre site internet. On l'utilise notamment pour récupérer l'utilisateur courant.
+Le raccourci du contrôleur $this->getUser() exécute en réalité $this->container->get('security.context')->getToken()->getUser()
+
+service_container
+Ce service vous renvoie le conteneur de services lui-même. 
+
+twig
+Ce service représente une instance de Twig_Environment. Il permet d'afficher ou de retourner une vue.
+
+templating
+Ce service représente le moteur de templates de Symfony2. contrôleur $this->render()exécute en réalité $this->container->get('templating')->renderResponse()
