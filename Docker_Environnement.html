@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<!-- saved from url=(0062)https://www.grafikart.fr/tutoriels/docker/docker-stack-web-635 -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimal-ui">
+    
+    <link rel="shortcut icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAGPUlEQVRYR62XWVBTVxjH/weQJSFAdUAg6OBaRyiEWLAiCrjgVFHRQUVaISJji6DoSx9qW8C+1E6tInX6YB2DCElVFAVcKrLUDeWhKliVVkWTsFoFZHPhns65IVcCCSSd3hmGzJ3zfd/v288lsPJRKBRufX2vYwCaCJAIStFOCIpsbJBdUFBwy0p1IJYKxMfHyzgO6ZQihhC4mZFrIIRkOziMUSqVynZLdI8KEBcXr6AU6YRAZonCQWeUhNDTKpWqaCQ5kwBxcXG+lJJ0gChG8NZSngYAuQCnVKvV7LfRYwTAvDXk1lLt1p2jlQDJVasLlAY5wrwFbAxhNpdb6+yMcnqgcLNZVMi6dfEv/ocw/ydAHiQ2di1l0hER4aisrPpPiqwRsrN/A48prWi8J+XFSMzK1TzAqaJCdHV1obi4BCUlpejp7rFG76hnRa69mODXCN+gJ7Cxf4tze6P0ANHLVvAAKnU+xGIxOI4DpRTll8qhVh9DW1vbqMpHOiB27YVf2CNM9G8CRwn6QfCq1w7nc+brAZZEffwCgNvu779DQMAHAgADAQXKLl3iYerq7loF4un7AjNna+Hz/jP0U8IbNwC0Nrji9/wApq+dREYuqiBAxJ4ff0BgYMAwAI7qI3LnTi0KClSoq60bEUQ6uR3BC55g/KSOd0aHADQ/dkFF7kzmXyUJmzuvgs30/Tn7IJPJBID6+r8wdcoUGAA4joJSDrdv16IgP58HGvxMnNqJ0CVP4T2pExyIkdeahxJ4TuoWItD0SILffpkGgFaS2cEfVbAmYCmYHz5fAAgLnYdAWSAUCgVkQYEwALD/LDe3bt3G0SNH0dl3FeFLtZgw9aXeMEcEgCf1zqg+7wXdQwlS9twRAB7XuuBS7kTGX0lkgfJToIj57PPNYH+GIgyeNVtwMEguQ1JSkgDCABhIR89l3G9c/s7bAYDHD5xRVeKBp/XOgo7tP90XAG6eHYeac+MAgiLiP9M/k1JkbNmSgpTUFAFAFhA0LNdBcjk2JSdBLg8yCfD3PTHKitzR8EAkyDqKOHy4sANzol8IANeL3XCj1A2EIItMnzw9kwIZadvSsHVbmgCQuEGBmps1JgtOPkuO5M3JmDazl4/AgzoRzp0Yi4f33hl2c3+LBas7MD2oF2OcqFEXXCmS4NppCbsLZBFfH18eYOOmjfgm42sB4JP1n+JG9Q0eIDdPCZ2uEQdyDkCn0wlQ/jJ3vH6jQf1dR+HdWI9+RK15CXl4j9kuuJAnRs15Jz2A13jpdgLsnRM6B8cLjwkA69bEofp6Na84X3UUwSEhfBcoD+fyIJ2dnUbREYkplq3vQnh0z7Au6O6ygb0IQgoOZ4rR8Kcda8MdxMfTJ4KjtMJSAFZ8nZ0dyFUeQV5uHvq5Dixa2Y3I5d1wFMOoC5612OLCr2I8b7VFcubLYQA2hERaBLB48SJ8+dVOeEu9+OIzdEFT2xXcb1wBB9FAjge64FmrHc6qxbhZrk/NZL+3owP4+fnhQtl5IQWHDh7CrqxvjcK8avUqpG5NhVTqbbIL2lrsUKJyRnW5kyDnJKZYuLYXoUtfCRH4+QtnNDfYgo+A1F0qozb4g0lomzRGo1ir0WLf3mwUnigUFIbMDuGL0tQc2LNzHOpr7fmzzPC86F6ELesT8m/YBRlrXfWLiEMQfyXzHi/lN2LmrgzEromFRCLhQViVsFGs0Wiwf18OThaehCUAEct7ELWuBw6GwhvYBawYr511QMVxfWoaW3SEB/AaL+UXEvvt4uKCpOQkbExSwEXiYrQLtBoNLl4sQ0LiBpMRKDvjDP+QV3jPgzPaBczw5VJHXC11RF+3/hrKFlFTiy5SuJSybuinNGMwCJsNio2JAxHRL6PBRWhuFBuWETNcVeKEKyVO6B1k2JaQLG2ztpJPw9BRZwqEQSQoGIizRQDd3TaoOCNCVYnIrGGDXbMfJqZAEhQJSE1LFdrQVASKC5xRUSwe1fCoAIYDUk8pu7JnAPBl76RSKVK3bsHKmBijbXi1TIRilQT/tNoKOR4c6qGRthjAHMiMGTOQsmMudM93Q3XQFZpHY6wybDWAOZBBnjWw9apr1glfPea8Hvx+1I9Tc0q8PX0yQWm6fqKQ7MZmbaYlBoee+ReGBelQvhxYYQAAAABJRU5ErkJggg==">
+    <meta http-equiv="content-language" content="fr">
+    <meta name="language" content="fr">
+    <meta name="copyright" content="//grafikart.fr">
+    <meta name="author" content="Grafikart.fr">
+    <meta name="theme-color" content="#78AB4E">
+    <meta name="msapplication-navbutton-color" content="#78AB4E">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#78AB4E">
+    <title>Tutoriel Vidéo Docker Environnement de développement basé sur Docker </title>
+    <meta property="og:image" content="/uploads/tutoriels/1/635.jpg">
+    <meta property="og:created_time" content="2015-06-26T14:01:00+02:00">
+    <meta property="og:type" content="video.other">
+    <meta property="og:duration" content="3910">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@grafikart_fr">
+    <meta name="twitter:author" content="@grafikart_fr">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Tutoriel Vidéo Docker Environnement de développement basé sur Docker ">
+    <meta name="twitter:image" content="/uploads/tutoriels/1/635.jpg">
+    <meta property="og:site_name" content="Grafikart.fr">
+    <meta property="og:url" content="https://www.grafikart.fr/tutoriels/docker/docker-stack-web-635">
+    <meta property="og:language" content="fr">
+    <link rel="alternate" type="application/rss+xml" title="Grafikart.fr | Flux" href="https://feeds.feedburner.com/Grafikart">
+    <link rel="stylesheet" media="screen" href="./Docker_Environnement_files/css"><link rel="stylesheet" media="screen" href="./Docker_Environnement_files/tomorrow-night-eighties.min.css"><link rel="stylesheet" media="screen" href="./Docker_Environnement_files/application.b0c16a8347cde05344c4f960cdd806d0.css">
+    <meta name="csrf-param" content="authenticity_token">
+    <meta name="csrf-token" content="qZHr56El2Y21RutzEhCGInO4crqMaXrH/bNbEI2nBd9wCk1T3fwhhtMrddjLoccgl0qc0GW+Fb1R9iKmKu8kng=="><meta name="action-cable-url" content="/websocket">
+    <meta name="turbolinks-cache-control" content="no-cache">
+    <script type="text/javascript" id="www-widgetapi-script" src="./Docker_Environnement_files/www-widgetapi.js.téléchargement" async=""></script><script async="" src="./Docker_Environnement_files/analytics.js.téléchargement"></script><script>
+      (function (i, s, o, g, r, a, m) {
+        i['GoogleAnalyticsObject'] = r;
+        i[r] = i[r] || function () {
+          (i[r].q = i[r].q || []).push(arguments)
+        }, i[r].l = 1 * new Date();
+        a = s.createElement(o),
+                m = s.getElementsByTagName(o)[0];
+        a.async = 1;
+        a.src = g;
+        m.parentNode.insertBefore(a, m)
+      })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+      ga('create', 'UA-6250784-1', 'grafikart.fr');
+    </script><script async="" src="./Docker_Environnement_files/highlight.min.js.téléchargement"></script><script async="" src="./Docker_Environnement_files/iframe_api"></script>
+  </head>
+  <body class="  " tubo="load">
+    <div class="site-container">
+      <header class="topbar is-scrolled" id="topbar">
+        <a class="topbar-logo" href="https://www.grafikart.fr/"><svg width="39" height="31"><use xlink:href="/assets/sprite-e39cb428b220d49bdcf7e988c31e5fa98c0622641b9b36e40587a495419f4987.svg#logo"></use></svg></a>
+        <nav class="topbar-menu">
+          <a class="topbar-menu_home" href="https://www.grafikart.fr/">Accueil</a><a class="active" href="https://www.grafikart.fr/tutoriels">Tutoriels</a><a href="https://www.grafikart.fr/formations">Formations</a><a href="https://www.grafikart.fr/blog">Blog</a><a href="https://www.grafikart.fr/forum">Forum</a><a href="https://www.grafikart.fr/live">Live </a><a class="topbar-menu-premium" href="https://www.grafikart.fr/premium">Premium</a>
+        </nav>
+        <div class="topbar-right">
+          <form class="js-search topbar-search" id="topbar-search" method="get" action="https://www.grafikart.fr/search">
+            <span><a class="icon icon-search" href="https://www.grafikart.fr/search"></a><input id="q" name="q" placeholder="Rechercher"></span>
+          </form><a class="btn btn-grey-border" href="https://www.grafikart.fr/inscription">S'inscrire</a><a class="btn" id="btn-login" href="https://www.grafikart.fr/login">Se connecter</a>
+        </div>
+        <div class="icon topbar-menu-icon" id="topbar-menu-icon">
+          <span></span>
+        </div>
+      </header>
+<header class="header header-mirror header-dark tcenter" style="background-image:url(/uploads/tutoriels/1/635.jpg);">
+  <div class="container">
+    <div class="header_player">  <div> <iframe id="youtube-player" frameborder="0" allowfullscreen="1" gesture="media" title="YouTube video player" width="640" height="360" src="./Docker_Environnement_files/F9R1EOaA7EA.html"></iframe> <a class="header_player_btn" target="_blank" href="http://www.youtube.com/watch?v=F9R1EOaA7EA"> <span></span> </a> </div> </div>
+    <h1 class="title title-multiline"><a href="https://www.grafikart.fr/tutoriels/docker">
+            Tutoriel  Vidéo Docker</a>Environnement de développement basé sur Docker
+    </h1>
+    <p class="header_btns">
+      <a data-turbolinks="false" class="btn" href="https://www.grafikart.fr/tutoriels/635/video"><i class="icon icon-play-circle"></i> Télécharger la vidéo</a>
+    </p>
+  </div>
+</header>
+<section class="container">
+  <div class="row">
+    <div class="col-s-8">
+      <div class="breadcrumb"><a itemprop="url" title="Tutoriels" href="https://www.grafikart.fr/tutoriels">
+          <span itemprop="title">Tutoriels </span></a><a itemprop="url" title="Docker" href="https://www.grafikart.fr/tutoriels/docker">
+          <span itemprop="title">Docker </span></a><a itemprop="url" title="Environnement de développement basé sur Docker" href="https://www.grafikart.fr/tutoriels/docker/docker-stack-web-635">
+          <span itemprop="title">Environnement de développement basé sur Docker </span></a>
+      </div>
+    </div>
+    <div class="col-s-4 tutoriel_date">
+      <abbr class="timeago">Il y a 2 ans</abbr>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-l-2 m-hidden share tutoriel-share">
+      <a class="share-comment" href="https://www.grafikart.fr/tutoriels/docker/docker-stack-web-635#comments"><i class="icon icon-comment"></i>59</a><a class="share-facebook"><i class="icon icon-facebook"></i> 0</a><a class="share-twitter"><i class="icon icon-twitter"></i></a>
+    </div>
+    <nav class="col-s-12 col-l-8">
+      <div class="formatted"><p>Dans le tutoriel précédent on a vu ce qu'était docker. Maintenant je vous propose de passer à un cas concret en mettant en place en environnement de développement basé sur des conteneurs docker.  </p>
+
+<h2>Boot2Docker</h2>
+
+<p>Si comme moi vous êtes sur Windows (ou sur Mac), il va falloir commencer par installer <a href="http://boot2docker.io/">Boot2docker</a>. Cet outil va se charger d'installer les composants nécessaires afin de faire fonctionner Docker sur votre environnement. En réalité, il va installer une machine virtuelle qui, elle, possédera docker et fournira une interface en ligne de commande pour interagir avec cette dernière. Globalement, il n'y a pas des tonnes de choses à retenir</p>
+
+<pre class="language-markup"><code class="hljs nginx"><span class="hljs-title">boot2docker</span> up  <span class="hljs-comment"># Permet de démarrer la machine contenant docker</span>
+boot2docker stop <span class="hljs-comment"># Permet de l'arrêter</span>
+boot2docker ssh  <span class="hljs-comment"># Permet de se connecter en ssh </span>
+boot2docker ip <span class="hljs-comment"># Permet d'obtenir l'ip de la machine</span>
+</code></pre>
+
+<p>Attention cependant cette machine n'est pas entièrement persistée, comprendre par là que mis à part les dossiers <code>/var/lib/docker</code> et <code>/var/lib/boot2docker</code> tous les autres dossiers seront réinitialisés à chaque redémarrage. </p>
+
+<p>Enfin, par défaut boot2docker monte votre dossier utilisateur sur la machine virtuelle. Si vous souhaitez partager un autre dossier vous pouvez créer un dossier partagé via Virtualbox et ensuite le monter sur la machine en ajoutant la commande suivante dans le fichier <code>/var/lib/boot2docker/bootlocal.sh</code>.</p>
+
+<pre class="language-markup"><code class="hljs coffeescript">mount -t vboxsf www /<span class="hljs-reserved">var</span>/www
+</code></pre>
+
+<p>Le fichier <code>bootlocal.sh</code> vous permet de placer une logique que vous souhaitez voir lancée au démarrage de la machine boot2docker.</p>
+
+<h2>Docker-compose</h2>
+
+<p>Pour orchestrer nos conteneurs nous allons utiliser un outil fournit par docker : <a href="%2Ehttps://docs.docker.com/compose/">docker compose</a>. Cet outil permet de configurer vos conteneurs via un fichier yml. Ce qui permet d'éviter d'avoir à taper des lignes de commandes très longues, mais aussi un partage plus aisé d'une configuration basée sur plusieurs conteneurs. </p>
+
+<p>Pour l'installer, rien de plus simple, il vous suffit de suivre les instructions présentes sur la <a href="https://docs.docker.com/compose/install/">documentation</a> (je ne copie pas les lignes ici, car elles changent assez souvent).</p>
+
+<p>En revanche, si vous êtes sur boot2docker le dossier dans lequel on vous demande de placer compose n'est pas persisté. Pour remédier au problème j'ai tout simplement placé <code>docker-compose</code> dans le dossier <code>/var/lib/boot2docker</code> et je le copie à chaque démarrage de ma machine grace au fichier <code>bootlocal.sh</code></p>
+
+<pre class="language-markup"><code class="hljs perl">cp /var/lib/boot2docker/docker-compose /usr/<span class="hljs-keyword">local</span>/bin/docker-compose
+<span class="hljs-keyword">chmod</span> +<span class="hljs-keyword">x</span> /usr/<span class="hljs-keyword">local</span>/bin/docker-compose
+</code></pre>
+
+<h2>Apache + PHP</h2>
+
+<p>On va maintenant commencer à construire notre stack avec apache et le module PHP. Pour cette configuration, on va se baser sur l'image <a href="https://registry.hub.docker.com/u/tutum/apache-php/">tutum/aphache-php</a>. Donc dans notre fichier <code>docker-compose.yml</code> :</p>
+
+<pre class="language-yml"><code class="hljs ruby"><span class="hljs-symbol">web:</span>
+    <span class="hljs-symbol">image:</span> tutum/apache-php
+    <span class="hljs-symbol">ports:</span>
+        - <span class="hljs-string">"80:80"</span>
+    <span class="hljs-symbol">volumes:</span>
+        - <span class="hljs-regexp">/var/www</span><span class="hljs-symbol">:/app</span>
+    <span class="hljs-symbol">environment:</span>
+        - <span class="hljs-constant">ALLOW_OVERRIDE</span>=<span class="hljs-keyword">true</span>
+</code></pre>
+
+<p>Tel quelle la configuration d'apache possède quelques défauts.</p>
+
+<ul>
+<li>Les erreurs PHP ne sont pas affichée (ce qui peut être un peu chiant pendant le dev)</li>
+<li>On ne peut pas personnaliser les VirtualHost </li>
+<li>Il nous manque l'extension bcrypt nécessaire à l'utilisation de certains frameworks PHP</li>
+</ul>
+
+<p>Pour les erreurs et les alias, la solution est plutôt simple. On va créer la configuration spéciale sur notre machine hôte et on fera ensuite des liens. En revanche l'activation de mcrypt va se faire via un fichier Dockerfile. On va donc se créer une "recette" pour créer notre propre image d'apache. Pour cela il suffit de créer un dossier au même niveau que notre fichier <code>docker-compose.yml</code> et créer un fichier <code>Dockerfile</code>.</p>
+
+<pre class="language-markup"><code class="hljs sql">FROM  tutum/apache-php
+
+RUN apt-get <span class="hljs-operator"><span class="hljs-keyword">update</span> &amp;&amp; apt-<span class="hljs-keyword">get</span> -yq <span class="hljs-keyword">install</span> php5-mcrypt &amp;&amp; php5enmod mcrypt
+
+EXPOSE <span class="hljs-number">80</span>
+
+CMD [<span class="hljs-string">"/run.sh"</span>]
+</span></code></pre>
+
+<p>Et on modifie donc notre yml pour lui demander d'utiliser ce Dockerfile plutôt que l'image en ligne</p>
+
+<pre class="language-yml"><code class="hljs ruby"><span class="hljs-symbol">web:</span>
+    <span class="hljs-symbol">build:</span> apache
+    <span class="hljs-symbol">ports:</span>
+        - <span class="hljs-string">"80:80"</span>
+    <span class="hljs-symbol">volumes:</span>
+        - <span class="hljs-regexp">/var/www</span><span class="hljs-symbol">:/var/www/local</span>.dev
+        - <span class="hljs-regexp">/var/www</span><span class="hljs-regexp">/docker/php</span>.<span class="hljs-symbol">ini:</span>/etc/php5/apache2/conf.d/<span class="hljs-number">30</span>-custom.ini
+        - <span class="hljs-regexp">/var/www</span><span class="hljs-regexp">/docker/sites</span><span class="hljs-symbol">:/etc/apache2/sites-enabled</span>
+    <span class="hljs-symbol">environment:</span>
+        - <span class="hljs-constant">ALLOW_OVERRIDE</span>=<span class="hljs-keyword">true</span>
+</code></pre>
+
+<p>Maintenant on peut build notre image à partir de notre fichier yml.</p>
+
+<pre class="language-markup"><code class="hljs">docker-compose build
+docker-compose up 
+</code></pre>
+
+<p>Pour le dossier sites-enabled, on peut aussi faire des liaisons fichier par fichier, mais vu que je travaille sur beaucoup de sites en même temps je me retrouve rapidement avec de nombreux virtualhost donc je préfère lier tout le dossier</p>
+
+<h2>Mysql</h2>
+
+<p>Pour travailler sur nos sites, on va avoir besoin d'utiliser une ou plusieurs bases de données. On va donc partir de l'image officielle de docker. Ce conteneur sera lié à un dossier de notre host afin de conserver les bases à chaque redémarrage.</p>
+
+<pre class="language-yml"><code class="hljs ruby"><span class="hljs-symbol">db:</span>
+    <span class="hljs-symbol">image:</span> mysql
+    <span class="hljs-symbol">volumes:</span>
+        - <span class="hljs-regexp">/var/lib</span><span class="hljs-regexp">/boot2docker/mysql</span><span class="hljs-symbol">:/var/lib/mysql</span>
+    <span class="hljs-symbol">environment:</span>
+        - <span class="hljs-constant">MYSQL_ROOT_PASSWORD</span>=root
+</code></pre>
+
+<p>Maintenant, on se retrouve avec une problématique assez importante. Comment PHP et Mysql vont pouvoir communiquer vu qu'ils sont dans 2 conteneurs différents ?<br>
+Docker permet de lier plusieurs conteneurs entre eux en utilisant le réseau. Au niveau de la configuration web on va ajouter l'argument suivant :</p>
+
+<pre class="language-yml"><code class="hljs css">    <span class="hljs-tag">links</span>:
+        <span class="hljs-tag">-</span> <span class="hljs-tag">db</span><span class="hljs-pseudo">:db</span>
+</code></pre>
+
+<p>Maitenant si on ping "db" dans le conteneur web on recevra alors une réponse du conteneur Mysql créé précédemment. De la même manière, le conteneur web aura accès aux différentes variables d'environnement de <code>db</code>. Ces dernières seront préfixées par le nom de la liaison établie : DB_.</p>
+
+<p>Du coup avec cette configuration il faudra taper <code>db</code> comme nom d'hôte de base de donnée dans nos scripts PHP.</p>
+
+<h2>Maildev</h2>
+
+<p>Une autre brique importante de notre environnement de développement c'est la mise en place d'un faux serveur SMTP afin de pouvoir tester les emails sortant de notre application.</p>
+
+<pre class="language-yml"><code class="hljs makefile"><span class="hljs-title">web:</span>
+    ........
+    links:
+        - db:db
+        - maildev:maildev
+<span class="hljs-title">maildev:</span>
+    image: djfarrelly/maildev
+    ports:
+        - "1080:80"
+</code></pre>
+
+<p>Et voila, nous aurons accès à l'interface de maildev sur le port 1080 de notre machine hôte et notre bloc web aura accès à maildev sur le nom de domaine <code>maildev</code> et sur le port <code>25</code>.</p>
+
+<h2>Alternative Nginx</h2>
+
+<p>Parcequ'il n'y a pas qu’apache dans la vie je vous propose aussi de voir comment remplacer notre partie apache avec nginx. Personnellement, c'est une solution que je préfère, car il est plus simple de séparer nginx et PHP avec le système fastcgi. Nous allons donc commencer par installer PHP fpm, et comme tout à l'heure on va se créer un fichier Dockerfile afin de pouvoir personnaliser les modules présents. </p>
+
+<pre class="language-markup"><code class="hljs sql">FROM php:5.6-fpm
+
+RUN apt-get <span class="hljs-operator"><span class="hljs-keyword">update</span> &amp;&amp; apt-<span class="hljs-keyword">get</span> <span class="hljs-keyword">install</span> -y \
+        libfreetype6-dev \
+        libjpeg62-turbo-dev \
+        libmcrypt-dev \
+        libpng12-dev \
+        libsqlite3-dev \
+        libssl-dev \
+        libcurl3-dev \
+        libxml2-dev \
+        libzzip-dev \
+    &amp;&amp; docker-php-ext-<span class="hljs-keyword">install</span> iconv json mcrypt mbstring mysql mysqli pdo_mysql pdo_sqlite phar curl ftp hash <span class="hljs-keyword">session</span> simplexml tokenizer <span class="hljs-keyword">xml</span> xmlrpc zip \
+    &amp;&amp; docker-php-ext-configure gd <span class="hljs-comment">--with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \</span>
+    &amp;&amp; docker-php-ext-<span class="hljs-keyword">install</span> gd
+
+WORKDIR /<span class="hljs-keyword">var</span>/www
+
+CMD [<span class="hljs-string">"php-fpm"</span>]
+</span></code></pre>
+
+<p>Et maintenant dans mon Dockerfile</p>
+
+<pre class="language-yml"><code class="hljs ruby"><span class="hljs-symbol">web:</span>
+    <span class="hljs-symbol">image:</span> nginx
+    <span class="hljs-symbol">ports:</span>
+        - <span class="hljs-string">"80:80"</span>
+    <span class="hljs-symbol">volumes:</span>
+        - <span class="hljs-regexp">/var/www</span><span class="hljs-regexp">/docker/nginx</span><span class="hljs-symbol">:/etc/nginx/conf</span>.d
+        - <span class="hljs-regexp">/var/www</span><span class="hljs-symbol">:/var/www/local</span>.dev
+    <span class="hljs-symbol">links:</span>
+        - <span class="hljs-symbol">php:</span>php
+<span class="hljs-constant">PHP</span><span class="hljs-symbol">:</span>
+    <span class="hljs-symbol">build:</span> php
+    <span class="hljs-symbol">volumes:</span>
+        - <span class="hljs-regexp">/var/www</span><span class="hljs-symbol">:/var/www/local</span>.dev
+        - <span class="hljs-regexp">/var/www</span><span class="hljs-regexp">/docker/php</span>.<span class="hljs-symbol">ini:</span>/usr/local/etc/php/php.ini
+    <span class="hljs-symbol">links:</span>
+        - <span class="hljs-symbol">db:</span>db
+        - <span class="hljs-symbol">maildev:</span>maildev
+</code></pre>
+
+<p>Comme précédemment je lie la configuration de nginx à un dossier de l'hôte afin de pouvoir toucher la configuration facilement. Pour PHP je me base sur le Dockerfile pour construire l'image et je fais un lien vers mon fichier php.ini (Par défaut l'image docker de PHP ne contient pas de php.ini donc je n'ai pas de risque d'écraser la configuration initiale).</p>
+
+<p>Voici un exemple de ma configuration <code>default.conf</code> de nginx</p>
+
+<pre class="language-markup"><code class="hljs nginx"><span class="hljs-title">server</span> {
+
+    <span class="hljs-title">listen</span> <span class="hljs-number">80</span>;
+    <span class="hljs-title">server_name</span> localhost;
+    <span class="hljs-title">root</span> /var/www/local.dev/Lab/Laravel/public;
+    <span class="hljs-title">index</span> index.php index.html index.htm;
+
+    <span class="hljs-title">location</span> / {
+        <span class="hljs-title">try_files</span> <span class="hljs-variable">$uri</span> <span class="hljs-variable">$uri</span>/ /index.php?<span class="hljs-variable">$query_string</span>;
+    }
+
+    <span class="hljs-title">location</span> <span class="hljs-regexp">~* \.PHP$</span> {
+        <span class="hljs-title">fastcgi_index</span>   index.php;
+        <span class="hljs-title">fastcgi_pass</span>   php:<span class="hljs-number">9000</span>;
+        <span class="hljs-title">include</span>         fastcgi_params;
+        <span class="hljs-title">fastcgi_param</span>   SCRIPT_FILENAME    <span class="hljs-variable">$document_root</span><span class="hljs-variable">$fastcgi_script_name</span>;
+    }
+
+}
+</code></pre>
+
+<h2>Composer</h2>
+
+<p>Un des problèmes de cette architecture c'est que maintenant PHP fonctionne dans un conteneur du coup comment peut-on utiliser PHP pour installer nos différentes dépendances ? En utilisant un conteneur évidemment :</p>
+
+<pre class="language-markup"><code class="hljs ruby">docker run -ti --rm -v <span class="hljs-variable">$(</span>pwd)<span class="hljs-symbol">:/app</span> composer/composer install
+</code></pre>
+
+<p>Évidemment cette commande est un peu chiante à taper à chaque fois que l'on veut installer une librairie pour notre application. On va donc se configurer un petit alias pour nous simplifier la tâche.</p>
+
+<pre class="language-markup"><code class="hljs nginx"><span class="hljs-title">alias</span> composer=<span class="hljs-string">'docker run -ti --rm -v $(pwd):/app composer/composer'</span>
+</code></pre>
+
+<p>Si vous êtes sur boot2docker et que vous souhaitez que cet alias reste en mémoire il faudra alors modifier le fichier <code>bootlocal.sh</code> </p>
+
+<pre class="language-sh"><code class="hljs bash"><span class="hljs-built_in">echo</span> <span class="hljs-string">'alias composer='</span>\<span class="hljs-string">''</span>docker run -ti --rm -v $(<span class="hljs-built_in">pwd</span>):/app composer/composer<span class="hljs-string">'\'</span><span class="hljs-string">''</span> &gt;&gt; /home/docker/.ashrc
+</code></pre>
+
+<p>Dorénavant dès que vous voudrez utiliser composer il vous suffira alors de faire un <code>composer install</code> comme avant.</p>
+
+<h2>Conclusion</h2>
+
+<p>J'ai mis tous les fichiers utilisés pour créer ma configuration sur <a href="https://github.com/Grafikart/Docker-Compose-Local.dev">github</a> histoire de vous simplifier la tâche.</p>
+
+        <hr>
+        <script async="" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+        <ins class="adsbygoogle" style="display:block; margin: 10px auto; width:728px; height:90px" data-ad-client="ca-pub-4857773671291119" data-ad-slot="6738301783"></ins>
+        <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+        
+      </div>
+    </nav>
+    <div class="col-l-2 col-m-12 col-s-12 tright">
+      <div class="author"><a title="Grafikart" href="https://www.grafikart.fr/profil/1">
+          <img class="author_avatar" src="./Docker_Environnement_files/1.jpg" alt=""></a><strong>Auteur</strong><br><a title="Grafikart" class="author_name" href="https://www.grafikart.fr/profil/1">Grafikart</a>
+      </div>
+      <script async="" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- Sidebar -->
+      <ins class="adsbygoogle" style="display:block; margin-top:50px; margin-left:20px;" data-ad-client="ca-pub-4857773671291119" data-ad-slot="1021342187" data-ad-format="auto"></ins>
+      <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+      </script> 
+    </div>
+  </div>
+  <div id="comments">
+    <section class="comments"> <hr>  <div> <h4 class="title title-small">59 Commentaires</h4> <form class="row comment-form"> <div class="col-s-12 col-m-6"> <div class="form-group"> <label class="control-label" for="comment_username">Pseudo</label> <input class="form-control" type="text" id="comment_username">  </div> </div> <div class="col-s-12 col-m-6"> <div class="form-group"> <label class="control-label" for="comment_email">Email</label> <input class="form-control" type="email" id="comment_email">  </div> </div> <div class="col-s-12"> <div class="form-group comment_content"> <textarea class="text required form-control" placeholder="Votre commentaire..." id="comment_content" style="overflow: hidden; word-wrap: break-word; height: 84px;"></textarea>  </div> <button class="btn btn-submit" type="submit"> Envoyer</button> </div> </form> <div class="slidescroll-transition"> <div class="comment has-replies slide-transition"> <img class="comment-avatar" src="./Docker_Environnement_files/17c67c7ccb505674e7101542c6580718"> <div class="comment-body"> <span class="comment-author">Ahmed Khalil</span> <a class="comment-date" href="https://www.grafikart.fr/tutoriels/docker/docker-stack-web-635#c41499"> <abbr class="timeago">Il y a 2 ans</abbr> </a> <span class="comment-action-link"> - <span class="comment-action comment-reply-link">Répondre</span>     </span> <div class="comment-text"> <div class="slide-transition"><p>Hello,</p>
+<p>J'ai un problème avec une config nginx et php.</p>
+<p>Dans mon docker-compose.yml j'ai ma config nginx avec un link php mais quand je fais un 'docker exec -ti docker_web_1 bash' puis vais dans mon projet symfony et fais un php app/console doctrine:schema:update il me dit qu'il ne connait pas la commande php. Une idée ?</p>
+</div>  </div> </div> </div> <div class="comment-replies slide-transition"> <div class="comment comment-reply slide-transition"> <img class="comment-avatar" src="./Docker_Environnement_files/8618.jpg"> <div class="comment-body"> <span class="comment-author">deep95</span> <a class="comment-date" href="https://www.grafikart.fr/tutoriels/docker/docker-stack-web-635#c41507"> <abbr class="timeago">Il y a 2 ans</abbr> </a> <span class="comment-action-link"> - <span class="comment-action comment-reply-link">Répondre</span>     </span> <div class="comment-text"> <div class="slide-transition"><p>Il faut peut être installer php-cli pour que ca fonctionne</p>
+</div>  </div> </div> </div><div class="comment comment-reply slide-transition"> <img class="comment-avatar" src="./Docker_Environnement_files/17c67c7ccb505674e7101542c6580718"> <div class="comment-body"> <span class="comment-author">Ahmed Khalil</span> <a class="comment-date" href="https://www.grafikart.fr/tutoriels/docker/docker-stack-web-635#c41521"> <abbr class="timeago">Il y a 2 ans</abbr> </a> <span class="comment-action-link"> - <span class="comment-action comment-reply-link">Répondre</span>     </span> <div class="comment-text"> <div class="slide-transition"><p>Bonjour et merci pour votre réponse.</p>
+<p>php-cli est déjà installer.</p>
+<p>Voila mon docker-compose :</p>
+<p>web:
+restart: always
+image: nginx
+ports:
+- "80:80"
+volumes:
+- /var/www/docker/php.ini:/etc/nginx/conf.d
+- /var/www/docker/nginx:/etc/nginx/conf.d
+- /var/www:/var/www
+links:
+- php:php</p>
+<p>php:
+build: php
+restart: always
+volumes:
+- /var/www:/var/www
+- /var/www/docker/php.ini:/usr/local/etc/php/php.ini
+links:
+- db:db
+- maildev:maildev</p>
+<p>phpmyadmin:
+image: phpmyadmin/phpmyadmin
+restart: always
+ports:
+- "8080:80"
+volumes:
+- /var/lib/boot2docker/phpmyadmin:/var/lib/phpmyadmin
+environment:
+- PMA_PASSWORD=root
+- PMA_USER=root
+links:
+- db:db</p>
+<p>db:
+image: mysql
+restart: always
+ports:
+- "3306:3306"
+volumes:
+- /var/lib/boot2docker/mysql:/var/lib/mysql
+environment:
+- MYSQL_ROOT_PASSWORD=root
+- MYSQL_USER=root
+- MYSQL_PASSWORD=root</p>
+<p>maildev:
+image: djfarrelly/maildev
+restart: always
+ports:
+- "1080:80"</p>
+<p>ainsi que mon dockerfile php</p>
+<p>FROM php:5.6-fpm</p>
+<p>RUN apt-get update &amp;&amp; apt-get install -y <br>
+libfreetype6-dev <br>
+php5-cli <br>
+libjpeg62-turbo-dev <br>
+libmcrypt-dev <br>
+libpng12-dev <br>
+libsqlite3-dev <br>
+libssl-dev <br>
+libcurl3-dev <br>
+libxml2-dev <br>
+libzzip-dev <br>
+&amp;&amp; docker-php-ext-install iconv json mcrypt mbstring mysql mysqli pdo_mysql pdo_sqlite phar curl ftp hash session simplexml tokenizer xml xmlrpc zip <br>
+&amp;&amp; docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ <br>
+&amp;&amp; docker-php-ext-install gd</p>
+<p>WORKDIR /var/www</p>
+<p>CMD ["php-fpm"]</p>
+<p>Une idée ?</p>
+</div>  </div> </div> </div> </div>  </div><div class="slidescroll-transition"> <div class="comment has-replies slide-transition"> <img class="comment-avatar" src="./Docker_Environnement_files/26700.jpg"> <div class="comment-body"> <span class="comment-author">Thiphariel</span> <a class="comment-date" href="https://www.grafikart.fr/tutoriels/docker/docker-stack-web-635#c41230"> <abbr class="timeago">Il y a 2 ans</abbr> </a> <span class="comment-action-link"> - <span class="comment-action comment-reply-link">Répondre</span>     </span> <div class="comment-text"> <div class="slide-transition"><p>Hello.</p>
+<p>J'ai monté un environnement assez similaire, sauf que j'utilise NGINX pour le dev également.
+Mon problème : alors que les fichiers PHP sont vraiment live, c'est a dire que je les edit sur mon poste host, ils sont aussi mis à jour coté container, alors que mes fichiers html, js ou autre ne le sont pas. Je dois redémarrer la machine pour qu'ils soient pris en compte, ce qui est relativement dérangeant :D</p>
+<p>Quelqu'un a-t-il eu le même soucis et l'a-t-il réglé ?</p>
+<p>Merci :)</p>
+</div>  </div> </div> </div> <div class="comment-replies slide-transition"> <div class="comment comment-reply slide-transition"> <img class="comment-avatar" src="./Docker_Environnement_files/26700.jpg"> <div class="comment-body"> <span class="comment-author">Thiphariel</span> <a class="comment-date" href="https://www.grafikart.fr/tutoriels/docker/docker-stack-web-635#c41262"> <abbr class="timeago">Il y a 2 ans</abbr> </a> <span class="comment-action-link"> - <span class="comment-action comment-reply-link">Répondre</span>     </span> <div class="comment-text"> <div class="slide-transition"><p>Je m'auto réponds, mais si ça peut aider quelqu'un : <a href="https://www.grafikart.fr/forum/topics/20662">https://www.grafikart.fr/forum/topics/20662</a></p>
+</div>  </div> </div> </div> </div>  </div><div class="slidescroll-transition"> <div class="comment has-replies slide-transition"> <img class="comment-avatar" src="./Docker_Environnement_files/1d4a6c58d8ca53208ea9e0cb6487f34e"> <div class="comment-body"> <span class="comment-author">Boulboulouboule</span> <a class="comment-date" href="https://www.grafikart.fr/tutoriels/docker/docker-stack-web-635#c41004"> <abbr class="timeago">Il y a 2 ans</abbr> </a> <span class="comment-action-link"> - <span class="comment-action comment-reply-link">Répondre</span>     </span> <div class="comment-text"> <div class="slide-transition"><p>Pour ceux qui rencontrent comme moi un soucis de DockerFile not found au moment du docker build -t, voilà la solution :  docker build --file=Dockerfile</p>
+</div>  </div> </div> </div> <div class="comment-replies slide-transition"> <div class="comment comment-reply slide-transition"> <img class="comment-avatar" src="./Docker_Environnement_files/667541cd74d58a039267e3cfe84331ff"> <div class="comment-body"> <span class="comment-author">Ganon</span> <a class="comment-date" href="https://www.grafikart.fr/tutoriels/docker/docker-stack-web-635#c41475"> <abbr class="timeago">Il y a 2 ans</abbr> </a> <span class="comment-action-link"> - <span class="comment-action comment-reply-link">Répondre</span>     </span> <div class="comment-text"> <div class="slide-transition"><p>Ou plus simplement : docker build .</p>
+</div>  </div> </div> </div> </div>  </div><div class="slidescroll-transition"> <div class="comment slide-transition"> <img class="comment-avatar" src="./Docker_Environnement_files/d0da279ea93b42903f9e0c7a0406cda2"> <div class="comment-body"> <span class="comment-author">Antho</span> <a class="comment-date" href="https://www.grafikart.fr/tutoriels/docker/docker-stack-web-635#c40759"> <abbr class="timeago">Il y a 2 ans</abbr> </a> <span class="comment-action-link"> - <span class="comment-action comment-reply-link">Répondre</span>     </span> <div class="comment-text"> <div class="slide-transition"><p>Salut,</p>
+<p>Merci pour le tuto, par contre je rencontre un problème de droit de fichier.
+Quand je me connecte à la VM avec "docker exec -ti lampafr_web_1 bash" je vois que tous les fichiers sont en root "drwxrwxrwx 1 root root   102 Nov 21 15:18 cache/" mais cela est un souci avec par exemple symfony, car il n'arrive donc pas à écrire dans le dossier de cache malgré les umask(0000); dans les controller.</p>
+<p>Avez-vous une solution pour cela ? J'ai encore du mal avec Docker je pense ...</p>
+<p>Merci bien,
+Anthony</p>
+</div>  </div> </div> </div>   </div><div class="slidescroll-transition"> <div class="comment slide-transition"> <img class="comment-avatar" src="./Docker_Environnement_files/cc2382bc612d3a2aeb57cf75bca4708c"> <div class="comment-body"> <span class="comment-author">snoopy69</span> <a class="comment-date" href="https://www.grafikart.fr/tutoriels/docker/docker-stack-web-635#c40682"> <abbr class="timeago">Il y a 2 ans</abbr> </a> <span class="comment-action-link"> - <span class="comment-action comment-reply-link">Répondre</span>     </span> <div class="comment-text"> <div class="slide-transition"><p>Bonjour,</p>
+<p>je suis intéressé par cette solution  pour en faire mon environnement de développement. pour l'instant je bloque sur l'étape du "mount" pour attacher mon dossier windows "www" sur mon dossier "var" du conteneur à chaque fois que j'essai j'ai un "mount denied".</p>
+<p>j'ai créé mon dossier www dans la config de la vm et  par la commande "sudo mount -t vboxsf www /var/www/html"  j'essai de le maper sur le dossier '/var/www/html"</p>
+<p>pour cela mon apache n'est pas démarré. pour information, j'ai aussi essai d'utiliser un dossier "var/toto" que j'ai créé et ajouter toutes les permissions mais rien n'y fait.  si une bonne âme charitable pouvait m'aider.</p>
+<p>pour information ,j'utilise la version actuellement de docker avec docker toolbox</p>
+<p>merci d'avance pour votre aide</p>
+<p>alain</p>
+</div>  </div> </div> </div>   </div><div class="slidescroll-transition"> <div class="comment slide-transition"> <img class="comment-avatar" src="./Docker_Environnement_files/53550.jpg"> <div class="comment-body"> <span class="comment-author">Tanotron</span> <a class="comment-date" href="https://www.grafikart.fr/tutoriels/docker/docker-stack-web-635#c40499"> <abbr class="timeago">Il y a 2 ans</abbr> </a> <span class="comment-action-link"> - <span class="comment-action comment-reply-link">Répondre</span>     </span> <div class="comment-text"> <div class="slide-transition"><p>Concernant composer, il peut aussi être utile de gérer l'utilisation de l'argument "global" en modifiant <a href="http://bootlocal.sh/">bootlocal.sh</a> :
+echo 'alias composer='''docker run -ti --rm -v $(pwd):/app -v /root/composer:/root/composer composer/composer'''' &gt;&gt; /home/docker/.ashrc</p>
+<p>L'emplacement /root/composer est déterminé dans le Dockerfile du conteneur composer/composer (ENV COMPOSER_HOME /root/composer).
+J'ai eu besoin de cela lors de l'installation de Yii2 basic app</p>
+</div>  </div> </div> </div>   </div><div class="slidescroll-transition"> <div class="comment slide-transition"> <img class="comment-avatar" src="./Docker_Environnement_files/41190.jpg"> <div class="comment-body"> <span class="comment-author">Laznet</span> <a class="comment-date" href="https://www.grafikart.fr/tutoriels/docker/docker-stack-web-635#c40431"> <abbr class="timeago">Il y a 2 ans</abbr> </a> <span class="comment-action-link"> - <span class="comment-action comment-reply-link">Répondre</span>     </span> <div class="comment-text"> <div class="slide-transition"><p>Sur leur Github (<a href="https://github.com/boot2docker/windows-installer/releases">https://github.com/boot2docker/windows-installer/releases</a>) c'est marquer que Boot2Docker est déprécié.
+Maintenant apparemment c'est Docker Toolbox qui prend la relève.</p>
+</div>  </div> </div> </div>   </div><div class="slidescroll-transition"> <div class="comment slide-transition"> <img class="comment-avatar" src="./Docker_Environnement_files/24cd92de2a876973d7259d1e8c33c82e"> <div class="comment-body"> <span class="comment-author">eCORTEX</span> <a class="comment-date" href="https://www.grafikart.fr/tutoriels/docker/docker-stack-web-635#c40382"> <abbr class="timeago">Il y a 2 ans</abbr> </a> <span class="comment-action-link"> - <span class="comment-action comment-reply-link">Répondre</span>     </span> <div class="comment-text"> <div class="slide-transition"><p>Pour les adeptes Nginx, pour mettre vos dates en FR avec la fonction strftime il faut un peu adapter le dockerfile du php-fpm comme suit:<br>
+(une ligne locales \ en plus dans le apt-get install et les 5 lignes de génération des locales avant le WORKDIR)</p>
+<p>FROM php:5.6-fpm</p>
+<h1>Install modules</h1>
+<p>RUN apt-get update &amp;&amp; apt-get install -y <br>
+libfreetype6-dev <br>
+libjpeg62-turbo-dev <br>
+libmcrypt-dev <br>
+libpng12-dev <br>
+libsqlite3-dev <br>
+libssl-dev <br>
+libcurl3-dev <br>
+libxml2-dev <br>
+libzzip-dev <br>
+locales <br>
+&amp;&amp; docker-php-ext-install iconv json mcrypt mbstring mysql mysqli pdo_mysql pdo_sqlite phar curl ftp hash session simplexml tokenizer xml xmlrpc zip <br>
+&amp;&amp; docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ <br>
+&amp;&amp; docker-php-ext-install gd</p>
+<p>#Generation des locales
+RUN cp /etc/locale.gen /etc/locale.gen.sav <br>
+&amp;&amp; echo fr_FR.UTF8 UTF8 &gt; /etc/locale.gen <br>
+&amp;&amp; echo fr_FR ISO8859-1 &gt;&gt; /etc/locale.gen <br>
+&amp;&amp; echo fr_FR@euro ISO8859-15 &gt;&gt; /etc/locale.gen <br>
+&amp;&amp; locale-gen</p>
+<p>WORKDIR /var/www
+CMD ["php-fpm"]</p>
+</div>  </div> </div> </div>   </div><div class="slidescroll-transition"> <div class="comment slide-transition"> <img class="comment-avatar" src="./Docker_Environnement_files/5ee55343f1dc00dc9c6f47482aa1fe19"> <div class="comment-body"> <span class="comment-author">binosor</span> <a class="comment-date" href="https://www.grafikart.fr/tutoriels/docker/docker-stack-web-635#c40078"> <abbr class="timeago">Il y a 2 ans</abbr> </a> <span class="comment-action-link"> - <span class="comment-action comment-reply-link">Répondre</span>     </span> <div class="comment-text"> <div class="slide-transition"><p>Bonjour,
+J'ai le même problème le links ne se fait pas. J'utilise docker-machine, cela pourrait il influer sur le script ? Est ce une question de port ? je ne vois pas pour l'instant.</p>
+</div>  </div> </div> </div>   </div><div class="slidescroll-transition"> <div class="comment slide-transition"> <img class="comment-avatar" src="./Docker_Environnement_files/47279.png"> <div class="comment-body"> <span class="comment-author">baptistegh</span> <a class="comment-date" href="https://www.grafikart.fr/tutoriels/docker/docker-stack-web-635#c40021"> <abbr class="timeago">Il y a 2 ans</abbr> </a> <span class="comment-action-link"> - <span class="comment-action comment-reply-link">Répondre</span>     </span> <div class="comment-text"> <div class="slide-transition"><p>Bonjour,
+Super tuto !
+Mais j'ai un problème les deux conteneurs web et db ne se "voit" pas, le ping sort : 'ping: unknown host db'</p>
+</div>  </div> </div> </div>   </div><div class="slidescroll-transition"> <div class="comment has-replies slide-transition"> <img class="comment-avatar" src="./Docker_Environnement_files/0a85532ae7611715f187a5418a96bd82"> <div class="comment-body"> <span class="comment-author">Gagi33</span> <a class="comment-date" href="https://www.grafikart.fr/tutoriels/docker/docker-stack-web-635#c39965"> <abbr class="timeago">Il y a 2 ans</abbr> </a> <span class="comment-action-link"> - <span class="comment-action comment-reply-link">Répondre</span>     </span> <div class="comment-text"> <div class="slide-transition"><p>Bonjour,</p>
+<p>Merci beaucoup pour le tuto, génial.
+J'ai par contre deux problèmes :</p>
+<p>1/ J'ai une application Symfony2 qui tourne avec l'image tutum/apache-php, tout marche bien sauf que l'affichage du site et très long. Avec vagrant le site  s'affichait en 3-4 secondes et là il s'affiche en plus de 20 secondes. Est-ce que quelqu'un sait comment résoudre ce problème.</p>
+<p>2/ Autre problème avec mon application Symfony2,  j'aimerais utilisé la console mais dès que je fais php app/console, il me dit qu'il ne trouve pas la commande php ce qui est logique mais je ne sais pas comment partager la commande php avec docker.</p>
+<p>Merci beaucoup pour votre aide.</p>
+</div>  </div> </div> </div> <div class="comment-replies slide-transition"> <div class="comment comment-reply slide-transition"> <img class="comment-avatar" src="./Docker_Environnement_files/766d94f1389ab265b0f333bc386eac9a"> <div class="comment-body"> <span class="comment-author">Raphaël</span> <a class="comment-date" href="https://www.grafikart.fr/tutoriels/docker/docker-stack-web-635#c40207"> <abbr class="timeago">Il y a 2 ans</abbr> </a> <span class="comment-action-link"> - <span class="comment-action comment-reply-link">Répondre</span>     </span> <div class="comment-text"> <div class="slide-transition"><p>Pour le 1er point, je ne sais pas trop quoi te dire.</p>
+<p>le deuxième point vient tout simplement du fait que tu dois te connecter en ssh sur ton container php. Dans l'exemple de la vidéo tu devrais faire un :</p>
+<p>docker exec -ti docker_web_1 bash</p>
+<p>Là tu peux aller dans /var/www/ton/projet/symfony et utiliser la commande php app/console... Mais j'ai pas encore testé un projet SF2 sous docker!</p>
+</div>  </div> </div> </div> </div>  </div><div class="slidescroll-transition"> <div class="comment slide-transition"> <img class="comment-avatar" src="./Docker_Environnement_files/7ffaabfe465469ef2f63563b1b801e1e"> <div class="comment-body"> <span class="comment-author">PasUneFleche</span> <a class="comment-date" href="https://www.grafikart.fr/tutoriels/docker/docker-stack-web-635#c39864"> <abbr class="timeago">Il y a 2 ans</abbr> </a> <span class="comment-action-link"> - <span class="comment-action comment-reply-link">Répondre</span>     </span> <div class="comment-text"> <div class="slide-transition"><p>Enfin un tuto qui me parait clair de A à Z sur docker !
+Mais il y'a tout de même un truc qui me torture les méninges.</p>
+<p>Sachant qu'un [docker start &lt;nameImage&gt;] persiste bien les données :</p>
+<p>Partager les configurations sur son Windows est t'elle la bonne méthode (php.ini / sites-availables) ?
+Ne peut-on pas écrire une seul fois ces configs à la création ?</p>
+<p>Parce que là, l'intérêt du "Je prends un conteneur à l'arrache et je le glisse en prod ou je le passe à un autre dev"..  ça tombe complètement à l'eau avec toutes ces dépendances :( , non ?</p>
+<p>Bon après c'est tous frais dans ma tête, je n’ai peut-être pas bien digéré la masse d'infos :D.</p>
+</div>  </div> </div> </div>   </div><div class="slidescroll-transition"> <div class="comment has-replies slide-transition"> <img class="comment-avatar" src="./Docker_Environnement_files/4192d04a3a00ef72ff2f59d5e4d63b9c"> <div class="comment-body"> <span class="comment-author">heyyo</span> <a class="comment-date" href="https://www.grafikart.fr/tutoriels/docker/docker-stack-web-635#c39566"> <abbr class="timeago">Il y a 2 ans</abbr> </a> <span class="comment-action-link"> - <span class="comment-action comment-reply-link">Répondre</span>     </span> <div class="comment-text"> <div class="slide-transition"><p>J'essaye desesperement d'utiliser NFS a la place de vboxsf qui est vraiment tres lent.</p>
+<p>Il y a un projet winnfsd <a href="https://bitbucket.org/jankowfsky/winnfsd">https://bitbucket.org/jankowfsky/winnfsd</a> qui propose un serveur NFS pour windows.
+Je l'utilisais sous vagrant sans soucis.
+Mais avec boot2Docker je dois manquer une etape. Impossible de monter mon repertoire dans  la vm.</p>
+<ol>
+<li>Je demarre mon serveur NFS sous windows en faisant .\winnfsd.exe C:\web</li>
+<li>Dans boot2docker je demarre le client nfs en faisant: sudo /usr/local/etc/init.d/nfs-client start</li>
+<li>Je monte mon repertoire:  sudo mount -t nfs 10.0.0.1:/C/web /var/www -o vers=3</li>
+</ol>
+<p>Mais la j obtiens l'erreur:
+pmap_getmaps.c: rpc problem: RPC: Procedure unavailable
+mount: RPC: Remote system error - Connection refused
+mount: mounting 10.0.0.1:/web on /var/www failed: Bad file descriptor</p>
+<p>Je suis a cours d'idee...</p>
+</div>  </div> </div> </div> <div class="comment-replies slide-transition"> <div class="comment comment-reply slide-transition"> <img class="comment-avatar" src="./Docker_Environnement_files/4192d04a3a00ef72ff2f59d5e4d63b9c"> <div class="comment-body"> <span class="comment-author">heyyo</span> <a class="comment-date" href="https://www.grafikart.fr/tutoriels/docker/docker-stack-web-635#c39570"> <abbr class="timeago">Il y a 2 ans</abbr> </a> <span class="comment-action-link"> - <span class="comment-action comment-reply-link">Répondre</span>     </span> <div class="comment-text"> <div class="slide-transition"><p>J'ai reussi a resoudre ce probleme de montage en utilisant un autre serveur NFS pour Windows, en l'occurence celui de hanWIN.
+Dommage que c 'est un shareware, mais pas excessif non plus.
+Si vous connaissez d'autres serveurs NFS pour Windows je suis preneur.</p>
+</div>  </div> </div> </div> </div>  </div><div class="slidescroll-transition"> <div class="comment slide-transition"> <img class="comment-avatar" src="./Docker_Environnement_files/44807.jpg"> <div class="comment-body"> <span class="comment-author">Thomas Vidal</span> <a class="comment-date" href="https://www.grafikart.fr/tutoriels/docker/docker-stack-web-635#c39514"> <abbr class="timeago">Il y a 2 ans</abbr> </a> <span class="comment-action-link"> - <span class="comment-action comment-reply-link">Répondre</span>     </span> <div class="comment-text"> <div class="slide-transition"><p>Salut, y a t il un moyen de créé un alias pour nodejs et npm ?</p>
+</div>  </div> </div> </div>   </div><div class="slidescroll-transition"> <div class="comment has-replies slide-transition"> <img class="comment-avatar" src="./Docker_Environnement_files/29456.jpg"> <div class="comment-body"> <span class="comment-author">Nightbringer</span> <a class="comment-date" href="https://www.grafikart.fr/tutoriels/docker/docker-stack-web-635#c39511"> <abbr class="timeago">Il y a 2 ans</abbr> </a> <span class="comment-action-link"> - <span class="comment-action comment-reply-link">Répondre</span>     </span> <div class="comment-text"> <div class="slide-transition"><p>Salut,
+vraiment très intéressant et très bien réalisé !</p>
+<p>Sinon, voici une interface sympa pour gérer ses containers :</p>
+<p><a href="https://kitematic.com/">https://kitematic.com/</a></p>
+</div>  </div> </div> </div> <div class="comment-replies slide-transition"> <div class="comment comment-reply slide-transition"> <img class="comment-avatar" src="./Docker_Environnement_files/32692.jpg"> <div class="comment-body"> <span class="comment-author">Manghao</span> <a class="comment-date" href="https://www.grafikart.fr/tutoriels/docker/docker-stack-web-635#c39528"> <abbr class="timeago">Il y a 2 ans</abbr> </a> <span class="comment-action-link"> - <span class="comment-action comment-reply-link">Répondre</span>     </span> <div class="comment-text"> <div class="slide-transition"><p>Ça semble super sympas ça, merci je vais essayer !</p>
+</div>  </div> </div> </div><div class="comment comment-reply slide-transition"> <img class="comment-avatar" src="./Docker_Environnement_files/29456.jpg"> <div class="comment-body"> <span class="comment-author">Nightbringer</span> <a class="comment-date" href="https://www.grafikart.fr/tutoriels/docker/docker-stack-web-635#c39543"> <abbr class="timeago">Il y a 2 ans</abbr> </a> <span class="comment-action-link"> - <span class="comment-action comment-reply-link">Répondre</span>     </span> <div class="comment-text"> <div class="slide-transition"><p>Il manque juste les links qui devraient être implémentés par la suite... mais le workaround est d'utiliser les variables d'environnements.</p>
+<p><a href="https://github.com/kitematic/kitematic/issues/283">https://github.com/kitematic/kitematic/issues/283</a>
+<a href="https://github.com/kitematic/kitematic/issues/14">https://github.com/kitematic/kitematic/issues/14</a></p>
+</div>  </div> </div> </div> </div>  </div><div class="slidescroll-transition"> <div class="comment has-replies slide-transition"> <img class="comment-avatar" src="./Docker_Environnement_files/4801.png"> <div class="comment-body"> <span class="comment-author">Spomky</span> <a class="comment-date" href="https://www.grafikart.fr/tutoriels/docker/docker-stack-web-635#c39509"> <abbr class="timeago">Il y a 2 ans</abbr> </a> <span class="comment-action-link"> - <span class="comment-action comment-reply-link">Répondre</span>     </span> <div class="comment-text"> <div class="slide-transition"><p>Très bon tuto !
+J'ai juste une petite question au sujet de l'utilisation de composer avec Docker : je n'arrive pas à installer mes dépendances à cause d'une extension PHP manquante.
+Cette extension est bien installée sur mon conteneur PHP, mais a priori comme composer est exécuté par un autre conteneur ça ne marche pas.</p>
+<p>Comment faire pour installer cette dépendance dans le conteneur de composer ?</p>
+</div>  </div> </div> </div> <div class="comment-replies slide-transition"> <div class="comment comment-reply slide-transition"> <img class="comment-avatar" src="./Docker_Environnement_files/4801.png"> <div class="comment-body"> <span class="comment-author">Spomky</span> <a class="comment-date" href="https://www.grafikart.fr/tutoriels/docker/docker-stack-web-635#c39515"> <abbr class="timeago">Il y a 2 ans</abbr> </a> <span class="comment-action-link"> - <span class="comment-action comment-reply-link">Répondre</span>     </span> <div class="comment-text"> <div class="slide-transition"><p>Je réponds à ma question: j'ai simplement créé ma propre image en partant de composer/composer et en ajoutant mes propres modules.</p>
+<pre><code class="language-yml">FROM composer/composer:master
+
+# PHP Extensions
+RUN docker-php-ext-install bcmath
+</code></pre>
+</div>  </div> </div> </div><div class="comment comment-reply slide-transition"> <img class="comment-avatar" src="./Docker_Environnement_files/8f9650e9f18a4911aed046b94cc2627c"> <div class="comment-body"> <span class="comment-author">Realz</span> <a class="comment-date" href="https://www.grafikart.fr/tutoriels/docker/docker-stack-web-635#c40425"> <abbr class="timeago">Il y a 2 ans</abbr> </a> <span class="comment-action-link"> - <span class="comment-action comment-reply-link">Répondre</span>     </span> <div class="comment-text"> <div class="slide-transition"><p>Hello,</p>
+<p>J'ai à peu près le même problème mais je ne vois pas ce qu'il faut mettre dans le docker-compose.yml du coup..
+Est-ce que tu pourrais me partager le block de ton docker-compose.yml qui concerne Composer, s'il te plaît ?</p>
+<p>Et tant que j'y suis, tu n'as pas jamais eu de problème de mémoire insuffisante ?</p>
+<p>Merci.</p>
+</div>  </div> </div> </div> </div>  </div><div class="slidescroll-transition"> <div class="comment has-replies slide-transition"> <img class="comment-avatar" src="./Docker_Environnement_files/19b0e12b756c7c0f596dd439e6b2cdb2"> <div class="comment-body"> <span class="comment-author">MaitrePylos</span> <a class="comment-date" href="https://www.grafikart.fr/tutoriels/docker/docker-stack-web-635#c39495"> <abbr class="timeago">Il y a 2 ans</abbr> </a> <span class="comment-action-link"> - <span class="comment-action comment-reply-link">Répondre</span>     </span> <div class="comment-text"> <div class="slide-transition"><p>Salut,
+Deux petites coquille dans le texte ci-dessus :
+image: tutum/aphache-ph  -&gt; image: tutum/apache-php</p>
+<p>Quand tu build un Dockerfile :
+build : apache -&gt; build: ./la/où/se/trouve/le/Dockerfile  me semble plus clair</p>
+<p>Par contre j'ai un souci, je n'arrive à garder un container ouvert en suivant le tuto(je suis sous Fedora):</p>
+<p>Attaching to apache_web_1
+apache_web_1 exited with code 0
+Gracefully stopping... (press Ctrl+C again to force)</p>
+<p>Tu aurais une idée ?</p>
+<p>Merci.</p>
+</div>  </div> </div> </div> <div class="comment-replies slide-transition"> <div class="comment comment-reply slide-transition"> <img class="comment-avatar" src="./Docker_Environnement_files/dc9c80f696836e6c657923bd28663fab"> <div class="comment-body"> <span class="comment-author">rif152</span> <a class="comment-date" href="https://www.grafikart.fr/tutoriels/docker/docker-stack-web-635#c39504"> <abbr class="timeago">Il y a 2 ans</abbr> </a> <span class="comment-action-link"> - <span class="comment-action comment-reply-link">Répondre</span>     </span> <div class="comment-text"> <div class="slide-transition"><p>salut j'ai eu le même soucis a un moment, et en re-faisant un docker-compose sa a fonctionner</p>
+</div>  </div> </div> </div><div class="comment comment-reply slide-transition"> <img class="comment-avatar" src="./Docker_Environnement_files/19b0e12b756c7c0f596dd439e6b2cdb2"> <div class="comment-body"> <span class="comment-author">MaitrePylos</span> <a class="comment-date" href="https://www.grafikart.fr/tutoriels/docker/docker-stack-web-635#c39510"> <abbr class="timeago">Il y a 2 ans</abbr> </a> <span class="comment-action-link"> - <span class="comment-action comment-reply-link">Répondre</span>     </span> <div class="comment-text"> <div class="slide-transition"><p>J'ai fait des build's au départ d'un fedora 22 et recréer tout un environnement de dev et cela fonctionne.
+merci.</p>
+</div>  </div> </div> </div> </div>  </div><div class="slidescroll-transition"> <div class="comment has-replies slide-transition"> <img class="comment-avatar" src="./Docker_Environnement_files/35eb5dec9b139f1c6762ec1fba30712f"> <div class="comment-body"> <span class="comment-author">LeRom</span> <a class="comment-date" href="https://www.grafikart.fr/tutoriels/docker/docker-stack-web-635#c39494"> <abbr class="timeago">Il y a 2 ans</abbr> </a> <span class="comment-action-link"> - <span class="comment-action comment-reply-link">Répondre</span>     </span> <div class="comment-text"> <div class="slide-transition"><p>Comment spécifier un smtp_host pour faire fonctionner maildev ? dans les logs apaches malgré avoir spécifié dans mon php.ini : SMTP = maildev et smtp_port = 25 j'ai une erreur /usr/sbin/sendmail: not found (si non super tuto vraiment très chouette )</p>
+</div>  </div> </div> </div> <div class="comment-replies slide-transition"> <div class="comment comment-reply slide-transition"> <img class="comment-avatar" src="./Docker_Environnement_files/36658.jpg"> <div class="comment-body"> <span class="comment-author">Chronoxyde</span> <a class="comment-date" href="https://www.grafikart.fr/tutoriels/docker/docker-stack-web-635#c39497"> <abbr class="timeago">Il y a 2 ans</abbr> </a> <span class="comment-action-link"> - <span class="comment-action comment-reply-link">Répondre</span>     </span> <div class="comment-text"> <div class="slide-transition"><p>Salut :)
+Je me permets de te répondre car j'ai eu le même soucis sans passer par docker et en passant par celui-ci aussi.
+En fait que tu passe par docker ou non la commande "mail(...);" de PHP a besoin de passer à travers un serveur de messagerie, je te conseille donc d'installer POSTFIX.</p>
+<p>Histoire d'aller au bout choses, créé un container spécifique pour POSTFIX et lie ce container à celui de PHP puis lie le port 25 du container de POSTFIX à ta machine, en espérant t'avoir aidé ;)</p>
+</div>  </div> </div> </div><div class="comment comment-reply slide-transition"> <img class="comment-avatar" src="./Docker_Environnement_files/35eb5dec9b139f1c6762ec1fba30712f"> <div class="comment-body"> <span class="comment-author">LeRom</span> <a class="comment-date" href="https://www.grafikart.fr/tutoriels/docker/docker-stack-web-635#c39502"> <abbr class="timeago">Il y a 2 ans</abbr> </a> <span class="comment-action-link"> - <span class="comment-action comment-reply-link">Répondre</span>     </span> <div class="comment-text"> <div class="slide-transition"><p>Merci, oui ça va bien m'aider ;-)</p>
+</div>  </div> </div> </div><div class="comment comment-reply slide-transition"> <img class="comment-avatar" src="./Docker_Environnement_files/59153.JPG"> <div class="comment-body"> <span class="comment-author">floppy_31</span> <a class="comment-date" href="https://www.grafikart.fr/tutoriels/docker/docker-stack-web-635#c39920"> <abbr class="timeago">Il y a 2 ans</abbr> </a> <span class="comment-action-link"> - <span class="comment-action comment-reply-link">Répondre</span>     </span> <div class="comment-text"> <div class="slide-transition"><p>Salut , moi j'ai utilisé le pkg ssmtp <a href="http://doc.ubuntu-fr.org/ssmtp">http://doc.ubuntu-fr.org/ssmtp</a>
+Dockerfile en partant de FROM  tutum/apache-php RUN apt-get -y install ssmtp
+docker-compose build ...
+modif du php.ini  sendmail_path = /usr/sbin/ssmtp -t
+modif de /etc/ssmtp/ssmtp.conf  mailhub=maildev:25   pas oublier de persister la modif dans le fichier docker-compose.yml
+test de la fonction mail de php cool le message arrive sur l'interface web maildev !</p>
+</div>  </div> </div> </div><div class="comment comment-reply slide-transition"> <img class="comment-avatar" src="./Docker_Environnement_files/cbb36b4407906364e48d645307f1d4f8"> <div class="comment-body"> <span class="comment-author">lagotonio</span> <a class="comment-date" href="https://www.grafikart.fr/tutoriels/docker/docker-stack-web-635#c41090"> <abbr class="timeago">Il y a 2 ans</abbr> </a> <span class="comment-action-link"> - <span class="comment-action comment-reply-link">Répondre</span>     </span> <div class="comment-text"> <div class="slide-transition"><p>Bonjour,</p>
+<p>Petite question  : j'ai bien créé le container pour postfix, je l'ai bien lié à mon container apache, par contre dans mon php.ini je met quoi dans sendmail_path  comme valeur afin de dire à PHP d'utiliser postfix ?</p>
+<p>Merci d'avance</p>
+</div>  </div> </div> </div> </div>  </div><div class="slidescroll-transition"> <div class="comment slide-transition"> <img class="comment-avatar" src="./Docker_Environnement_files/1a318588a2e307ec983e969a4a0ef0fd"> <div class="comment-body"> <span class="comment-author">kanardo</span> <a class="comment-date" href="https://www.grafikart.fr/tutoriels/docker/docker-stack-web-635#c39493"> <abbr class="timeago">Il y a 2 ans</abbr> </a> <span class="comment-action-link"> - <span class="comment-action comment-reply-link">Répondre</span>     </span> <div class="comment-text"> <div class="slide-transition"><p>Salut,</p>
+<p>Voici quelques questions que je me pose sur l'utilisation de docker :</p>
+<p>Doit-on créer un container par application pour permettre une gestion des paramètres plus fine pour chacune de ses applications ?
+Est ce que docker "mutualise" les ressources si par exemple 2 containers utilisent l'image php5.6 (comment ça se passe au niveau mémoire du serveur hôte ) ?
+Peut-on faire fonctionner plusieurs containers sur le même port ?</p>
+</div>  </div> </div> </div>   </div><div class="slidescroll-transition"> <div class="comment has-replies slide-transition"> <img class="comment-avatar" src="./Docker_Environnement_files/22e59969a08b165a70c7c0ee9aeb1caa"> <div class="comment-body"> <span class="comment-author">idir</span> <a class="comment-date" href="https://www.grafikart.fr/tutoriels/docker/docker-stack-web-635#c39489"> <abbr class="timeago">Il y a 2 ans</abbr> </a> <span class="comment-action-link"> - <span class="comment-action comment-reply-link">Répondre</span>     </span> <div class="comment-text"> <div class="slide-transition"><p>slt
+Moi j'arrive pas un faire un partage de dossier je suis sous Ubuntu avec un conteneur Debian la commande suivant ne fonctionne pas  :</p>
+<p>sudo docker run myimage -ti -v /home/julien/partage/:/home/partage
+exec: "-ti": executable file not found in $PATH2015/06/29 10:39:23 Error response from daemon: Cannot start container b5993930417c33ac2a8eac88f665e906ea36ba53a0a36b37903ba09cd1ae033d: exec: "-ti": executable file not found in $PATH</p>
+<p>si quelqu'un sait comment faire :)</p>
+</div>  </div> </div> </div> <div class="comment-replies slide-transition"> <div class="comment comment-reply slide-transition"> <img class="comment-avatar" src="./Docker_Environnement_files/1a318588a2e307ec983e969a4a0ef0fd"> <div class="comment-body"> <span class="comment-author">kanardo</span> <a class="comment-date" href="https://www.grafikart.fr/tutoriels/docker/docker-stack-web-635#c39492"> <abbr class="timeago">Il y a 2 ans</abbr> </a> <span class="comment-action-link"> - <span class="comment-action comment-reply-link">Répondre</span>     </span> <div class="comment-text"> <div class="slide-transition"><p>Essai d'enlever le "/" qui se situe entre "partage" et ":".</p>
+</div>  </div> </div> </div> </div>  </div><div class="slidescroll-transition"> <div class="comment has-replies slide-transition"> <img class="comment-avatar" src="./Docker_Environnement_files/dc9c80f696836e6c657923bd28663fab"> <div class="comment-body"> <span class="comment-author">rif5</span> <a class="comment-date" href="https://www.grafikart.fr/tutoriels/docker/docker-stack-web-635#c39470"> <abbr class="timeago">Il y a 2 ans</abbr> </a> <span class="comment-action-link"> - <span class="comment-action comment-reply-link">Répondre</span>     </span> <div class="comment-text"> <div class="slide-transition"><p>Super tuto ;) sa me donne envie d'essayer :) J'était actuellement avec vagrant et j'ai bien envie d'essayer un peu docker :) Merci ;)</p>
+</div>  </div> </div> </div> <div class="comment-replies slide-transition"> <div class="comment comment-reply slide-transition"> <img class="comment-avatar" src="./Docker_Environnement_files/dc9c80f696836e6c657923bd28663fab"> <div class="comment-body"> <span class="comment-author">rif5</span> <a class="comment-date" href="https://www.grafikart.fr/tutoriels/docker/docker-stack-web-635#c39476"> <abbr class="timeago">Il y a 2 ans</abbr> </a> <span class="comment-action-link"> - <span class="comment-action comment-reply-link">Répondre</span>     </span> <div class="comment-text"> <div class="slide-transition"><p>Du coup je me suis fait une petite installation avec nginx  par contre l'affichage des pages et trés longues (au moins au premiers affichage), et je parle d'afficher un php info ou un hello world, quelqu'un a une idée de pourquoi? j'ai peut etre fait une erreur quelque part :s</p>
+</div>  </div> </div> </div><div class="comment comment-reply slide-transition"> <img class="comment-avatar" src="./Docker_Environnement_files/dc9c80f696836e6c657923bd28663fab"> <div class="comment-body"> <span class="comment-author">rif5</span> <a class="comment-date" href="https://www.grafikart.fr/tutoriels/docker/docker-stack-web-635#c39479"> <abbr class="timeago">Il y a 2 ans</abbr> </a> <span class="comment-action-link"> - <span class="comment-action comment-reply-link">Répondre</span>     </span> <div class="comment-text"> <div class="slide-transition"><p>Bon bah définitivement j'ai dut faire une connerie car lorsque je crée une bdd avec ou sans table dés que je relance docker tout est perdu :s ce qui n'est pas vraiment pratique pour un projet :s, une idée de ou peut venir le probléme?</p>
+</div>  </div> </div> </div><div class="comment comment-reply slide-transition"> <img class="comment-avatar" src="./Docker_Environnement_files/dc9c80f696836e6c657923bd28663fab"> <div class="comment-body"> <span class="comment-author">rif152</span> <a class="comment-date" href="https://www.grafikart.fr/tutoriels/docker/docker-stack-web-635#c39507"> <abbr class="timeago">Il y a 2 ans</abbr> </a> <span class="comment-action-link"> - <span class="comment-action comment-reply-link">Répondre</span>     </span> <div class="comment-text"> <div class="slide-transition"><p>problème résolu j'avais fait une faute de frappe :s</p>
+</div>  </div> </div> </div> </div>  </div><div class="slidescroll-transition"> <div class="comment slide-transition"> <img class="comment-avatar" src="./Docker_Environnement_files/49835.jpeg"> <div class="comment-body"> <span class="comment-author">sitle</span> <a class="comment-date" href="https://www.grafikart.fr/tutoriels/docker/docker-stack-web-635#c39467"> <abbr class="timeago">Il y a 2 ans</abbr> </a> <span class="comment-action-link"> - <span class="comment-action comment-reply-link">Répondre</span>     </span> <div class="comment-text"> <div class="slide-transition"><p>Cool comme tuto.</p>
+<p>Vous pouvez aussi utiliser docker-machine (à pré installer) pour générer votre machine contenant vos containers :</p>
+<p>docker-machine dev -d virtualbox</p>
+<p>Ca fait pratiquement la même chose (ça installe boot2docker dans virtualbox) mais ça permet surtout de pouvoir se connecter sur autre chose que virtualbox (notamment un fournisseur de cloud comme digital ocean par exemple).</p>
+<p>Avec le docker engine (la commande docker), vous pouvez interagir avec votre boot2docker mais pour ça, il faut initialiser un certain nombre de variable d'environnement. Pour les avoir :</p>
+<p>docker-machine env dev</p>
+<p>Après vous pouvez installer et utiliser docker-compose directement depuis votre terminal (sans avoir à se connecter à la VM), il attaquera directement votre machine virtuelle (ou une machine sur le cloud).</p>
+<p>Voilà.</p>
+<p>@+</p>
+<p>PS : chaque élément de ta stack (définit dans ton fichier docker-compose.yml) peut-être répliqué avec le paramètre scale mais il faudrait prévoir un load balancer au dessus et un service discovery qui permettra d'auto configurer ce load balancer.</p>
+</div>  </div> </div> </div>   </div><div class="slidescroll-transition"> <div class="comment slide-transition"> <img class="comment-avatar" src="./Docker_Environnement_files/4719.jpg"> <div class="comment-body"> <span class="comment-author">philieric</span> <a class="comment-date" href="https://www.grafikart.fr/tutoriels/docker/docker-stack-web-635#c39465"> <abbr class="timeago">Il y a 2 ans</abbr> </a> <span class="comment-action-link"> - <span class="comment-action comment-reply-link">Répondre</span>     </span> <div class="comment-text"> <div class="slide-transition"><p>Cool comme tuto, intéressant rapide et plus simple que Vagrant, chaque composant bien isolé</p>
+</div>  </div> </div> </div>   </div><div class="slidescroll-transition"> <div class="comment has-replies slide-transition"> <img class="comment-avatar" src="./Docker_Environnement_files/44835.png"> <div class="comment-body"> <span class="comment-author">Huggy</span> <a class="comment-date" href="https://www.grafikart.fr/tutoriels/docker/docker-stack-web-635#c39460"> <abbr class="timeago">Il y a 2 ans</abbr> </a> <span class="comment-action-link"> - <span class="comment-action comment-reply-link">Répondre</span>     </span> <div class="comment-text"> <div class="slide-transition"><p>super tuto (on se répète)
+Lorsqu'on lie des containers,  il y a normalement un ordre de lancement
+avec docker-compose, comment ça se gère ?
+est-ce que le fait de mettre un link: php dans web:, il va lancer php avant ?</p>
+</div>  </div> </div> </div> <div class="comment-replies slide-transition"> <div class="comment comment-reply slide-transition"> <img class="comment-avatar" src="./Docker_Environnement_files/1.jpg"> <div class="comment-body"> <span class="comment-author">Grafikart</span> <a class="comment-date" href="https://www.grafikart.fr/tutoriels/docker/docker-stack-web-635#c39461"> <abbr class="timeago">Il y a 2 ans</abbr> </a> <span class="comment-action-link"> - <span class="comment-action comment-reply-link">Répondre</span>     </span> <div class="comment-text"> <div class="slide-transition"><p>L'ordre de lancement est influencé par les dépendance donc effectivement PHP sera lancé avant web car web dépend de PHP</p>
+</div>  </div> </div> </div> </div>  </div><div class="slidescroll-transition"> <div class="comment slide-transition"> <img class="comment-avatar" src="./Docker_Environnement_files/19b0e12b756c7c0f596dd439e6b2cdb2"> <div class="comment-body"> <span class="comment-author">MaitrePylos</span> <a class="comment-date" href="https://www.grafikart.fr/tutoriels/docker/docker-stack-web-635#c39458"> <abbr class="timeago">Il y a 2 ans</abbr> </a> <span class="comment-action-link"> - <span class="comment-action comment-reply-link">Répondre</span>     </span> <div class="comment-text"> <div class="slide-transition"><p>Salut, merci pour le tuto.
+Petite astuce pour toi, car cela t'arrive souvent que tu oublies sudo dans un vi/vim :</p>
+<p>:w !sudo tee %</p>
+<p>Ensuite tu tape 'C' et 'enter' et ça roule, pas besoin de copier coller ;)</p>
+</div>  </div> </div> </div>   </div><div class="slidescroll-transition"> <div class="comment has-replies slide-transition"> <img class="comment-avatar" src="./Docker_Environnement_files/1a318588a2e307ec983e969a4a0ef0fd"> <div class="comment-body"> <span class="comment-author">kanardo</span> <a class="comment-date" href="https://www.grafikart.fr/tutoriels/docker/docker-stack-web-635#c39455"> <abbr class="timeago">Il y a 2 ans</abbr> </a> <span class="comment-action-link"> - <span class="comment-action comment-reply-link">Répondre</span>     </span> <div class="comment-text"> <div class="slide-transition"><p>Super le tuto.
+J'ai un petit problème après l'installation de docker-compose.
+Il me dit "-sh: docker-compose: not found" lorsque je le lance.
+Pourtant il est bien dans /user/local/bin/ et il est bien exécutable.
+Pour info je suis sous OSX..</p>
+<p>Merci</p>
+</div>  </div> </div> </div> <div class="comment-replies slide-transition"> <div class="comment comment-reply slide-transition"> <img class="comment-avatar" src="./Docker_Environnement_files/1.jpg"> <div class="comment-body"> <span class="comment-author">Grafikart</span> <a class="comment-date" href="https://www.grafikart.fr/tutoriels/docker/docker-stack-web-635#c39459"> <abbr class="timeago">Il y a 2 ans</abbr> </a> <span class="comment-action-link"> - <span class="comment-action comment-reply-link">Répondre</span>     </span> <div class="comment-text"> <div class="slide-transition"><p>Essaie de mettre à jour l'iso de boot2docker avec la dernièère version 1.7 <a href="https://github.com/boot2docker/boot2docker/releases">https://github.com/boot2docker/boot2docker/releases</a></p>
+</div>  </div> </div> </div><div class="comment comment-reply slide-transition"> <img class="comment-avatar" src="./Docker_Environnement_files/1a318588a2e307ec983e969a4a0ef0fd"> <div class="comment-body"> <span class="comment-author">kanardo</span> <a class="comment-date" href="https://www.grafikart.fr/tutoriels/docker/docker-stack-web-635#c39487"> <abbr class="timeago">Il y a 2 ans</abbr> </a> <span class="comment-action-link"> - <span class="comment-action comment-reply-link">Répondre</span>     </span> <div class="comment-text"> <div class="slide-transition"><p>Thanks, j'ai fais une docker upgrade et tout est rentré dans l'ordre</p>
+</div>  </div> </div> </div><div class="comment comment-reply slide-transition"> <img class="comment-avatar" src="./Docker_Environnement_files/a63758bd38b449b2e3a9dbf3ec68f607"> <div class="comment-body"> <span class="comment-author">Tiamat</span> <a class="comment-date" href="https://www.grafikart.fr/tutoriels/docker/docker-stack-web-635#c40019"> <abbr class="timeago">Il y a 2 ans</abbr> </a> <span class="comment-action-link"> - <span class="comment-action comment-reply-link">Répondre</span>     </span> <div class="comment-text"> <div class="slide-transition"><p>Perso j'ai du réinstaller python avec bref en suivant les instruction du lien ci-dessous</p>
+<p><a href="https://github.com/docker/compose/issues/271">https://github.com/docker/compose/issues/271</a></p>
+</div>  </div> </div> </div> </div>  </div><div class="slidescroll-transition"> <div class="comment slide-transition"> <img class="comment-avatar" src="./Docker_Environnement_files/eea5d7010bd213fad78c308d07355e84"> <div class="comment-body"> <span class="comment-author">Nagase</span> <a class="comment-date" href="https://www.grafikart.fr/tutoriels/docker/docker-stack-web-635#c39454"> <abbr class="timeago">Il y a 2 ans</abbr> </a> <span class="comment-action-link"> - <span class="comment-action comment-reply-link">Répondre</span>     </span> <div class="comment-text"> <div class="slide-transition"><p>J'ai lu beaucoup au sujet de Docker, j'avais beaucoup de billes en main, mais je n'arrivais pas à faire le lien ! J'ai l'impression d'avoir un nouveau monde qui s'offre à moi. Merci beaucoup !</p>
+</div>  </div> </div> </div>   </div><div class="slidescroll-transition"> <div class="comment has-replies slide-transition"> <img class="comment-avatar" src="./Docker_Environnement_files/3076.png"> <div class="comment-body"> <span class="comment-author">samas92i</span> <a class="comment-date" href="https://www.grafikart.fr/tutoriels/docker/docker-stack-web-635#c39448"> <abbr class="timeago">Il y a 2 ans</abbr> </a> <span class="comment-action-link"> - <span class="comment-action comment-reply-link">Répondre</span>     </span> <div class="comment-text"> <div class="slide-transition"><p>Merci super, bientot on pourra utiliser partout Linux, Windows, Mac. Voir même faire de la location de serveur de jeux "windows" sous du linux :D</p>
+</div>  </div> </div> </div> <div class="comment-replies slide-transition"> <div class="comment comment-reply slide-transition"> <img class="comment-avatar" src="./Docker_Environnement_files/1.jpg"> <div class="comment-body"> <span class="comment-author">Grafikart</span> <a class="comment-date" href="https://www.grafikart.fr/tutoriels/docker/docker-stack-web-635#c39453"> <abbr class="timeago">Il y a 2 ans</abbr> </a> <span class="comment-action-link"> - <span class="comment-action comment-reply-link">Répondre</span>     </span> <div class="comment-text"> <div class="slide-transition"><p>Attention, même si une version docker arrive sur Windows, elle ne sera en mesure de faire tourner que des applications windows normalement.</p>
+</div>  </div> </div> </div><div class="comment comment-reply slide-transition"> <img class="comment-avatar" src="./Docker_Environnement_files/3076.png"> <div class="comment-body"> <span class="comment-author">samas92i</span> <a class="comment-date" href="https://www.grafikart.fr/tutoriels/docker/docker-stack-web-635#c39456"> <abbr class="timeago">Il y a 2 ans</abbr> </a> <span class="comment-action-link"> - <span class="comment-action comment-reply-link">Répondre</span>     </span> <div class="comment-text"> <div class="slide-transition"><p>A voir comment il vont, faire mais sa serais vraiment bien. On pourra enfin profiter des  serveurs de jeux qui tourne que sous du Windows à bas prix :)</p>
+</div>  </div> </div> </div> </div>  </div><div class="slidescroll-transition"> <div class="comment has-replies slide-transition"> <img class="comment-avatar" src="./Docker_Environnement_files/4bf1293b0f850b7830ca8e03fccc5bd1"> <div class="comment-body"> <span class="comment-author">Plepu</span> <a class="comment-date" href="https://www.grafikart.fr/tutoriels/docker/docker-stack-web-635#c39445"> <abbr class="timeago">Il y a 2 ans</abbr> </a> <span class="comment-action-link"> - <span class="comment-action comment-reply-link">Répondre</span>     </span> <div class="comment-text"> <div class="slide-transition"><p>Tres bonne video , comme dab :)
+par contre pourquoi dis tu "NGNIX" alors que ça s'ecrit NGINX , je taquine ^^</p>
+</div>  </div> </div> </div> <div class="comment-replies slide-transition"> <div class="comment comment-reply slide-transition"> <img class="comment-avatar" src="./Docker_Environnement_files/41982.jpg"> <div class="comment-body"> <span class="comment-author">Maxwellewxam</span> <a class="comment-date" href="https://www.grafikart.fr/tutoriels/docker/docker-stack-web-635#c39447"> <abbr class="timeago">Il y a 2 ans</abbr> </a> <span class="comment-action-link"> - <span class="comment-action comment-reply-link">Répondre</span>     </span> <div class="comment-text"> <div class="slide-transition"><p>Sur la doc il est marqué que ça se dit "engine X" en fait :)</p>
+</div>  </div> </div> </div><div class="comment comment-reply slide-transition"> <img class="comment-avatar" src="./Docker_Environnement_files/4bf1293b0f850b7830ca8e03fccc5bd1"> <div class="comment-body"> <span class="comment-author">Plepu </span> <a class="comment-date" href="https://www.grafikart.fr/tutoriels/docker/docker-stack-web-635#c39449"> <abbr class="timeago">Il y a 2 ans</abbr> </a> <span class="comment-action-link"> - <span class="comment-action comment-reply-link">Répondre</span>     </span> <div class="comment-text"> <div class="slide-transition"><p>Au temps pour moi ! :)</p>
+</div>  </div> </div> </div><div class="comment comment-reply slide-transition"> <img class="comment-avatar" src="./Docker_Environnement_files/1.jpg"> <div class="comment-body"> <span class="comment-author">Grafikart</span> <a class="comment-date" href="https://www.grafikart.fr/tutoriels/docker/docker-stack-web-635#c39450"> <abbr class="timeago">Il y a 2 ans</abbr> </a> <span class="comment-action-link"> - <span class="comment-action comment-reply-link">Répondre</span>     </span> <div class="comment-text"> <div class="slide-transition"><p>Ma prononciation de l'anglais est si mauvaise que ça ? XD</p>
+</div>  </div> </div> </div><div class="comment comment-reply slide-transition"> <img class="comment-avatar" src="./Docker_Environnement_files/8d8b0042a241304a39a3a536cf955bda"> <div class="comment-body"> <span class="comment-author">alexandreg</span> <a class="comment-date" href="https://www.grafikart.fr/tutoriels/docker/docker-stack-web-635#c39457"> <abbr class="timeago">Il y a 2 ans</abbr> </a> <span class="comment-action-link"> - <span class="comment-action comment-reply-link">Répondre</span>     </span> <div class="comment-text"> <div class="slide-transition"><p>sans parler de "latest" ;) (sinon super tuto, il y aura une suite ?)</p>
+</div>  </div> </div> </div> </div>  </div> </div> </section>
+  </div>
+</section>
+      <footer class="footer">
+        <div class="container">
+          <div class="row">
+            <div class="col-m-5 col-s-12">
+              <p>
+                <img src="./Docker_Environnement_files/logo-footer-f0a333a1c7b2c1833354864ad7c405e0396d894732bf03abb902f2281e6c942e.png" alt="Logo footer">
+              </p>
+              <p>
+                Après avoir appris sur Internet quoi de plus normal que de partager à son tour ?
+                Passionné par le web depuis un peu plus de 12 ans maintenant j'aime partager mes compétences et mes
+                découvertes avec les personnes qui ont cette même passion pour le web
+              </p>
+              <p><a target="_blank" title="RSS" href="http://feeds.feedburner.com/Grafikart">
+                  <svg width="30" height="30"><use xlink:href="/assets/sprite-e39cb428b220d49bdcf7e988c31e5fa98c0622641b9b36e40587a495419f4987.svg#rss"></use></svg></a> <a target="_blank" title="Youtube" href="https://www.youtube.com/user/grafikarttv?sub_confirmation=1"><svg width="30" height="30"><use xlink:href="/assets/sprite-e39cb428b220d49bdcf7e988c31e5fa98c0622641b9b36e40587a495419f4987.svg#youtube"></use></svg></a> <a target="_blank" title="Facebook" href="https://www.facebook.com/pages/Grafikart/483920250642"><svg width="30" height="30"><use xlink:href="/assets/sprite-e39cb428b220d49bdcf7e988c31e5fa98c0622641b9b36e40587a495419f4987.svg#facebook"></use></svg></a> <a target="_blank" title="Twitter" href="https://twitter.com/grafikart_fr"><svg width="30" height="30"><use xlink:href="/assets/sprite-e39cb428b220d49bdcf7e988c31e5fa98c0622641b9b36e40587a495419f4987.svg#twitter"></use></svg></a> <a target="_blank" title="Github" href="https://github.com/Grafikart"><svg width="30" height="30"><use xlink:href="/assets/sprite-e39cb428b220d49bdcf7e988c31e5fa98c0622641b9b36e40587a495419f4987.svg#github"></use></svg></a>
+              </p>
+            </div>
+            <div class="col-m-4 col-s-12">
+              <div class="footer_title">
+                Mes derniers tweets
+              </div>
+              <div class="footer_list">
+                <div class="footer_list_item footer_quote">
+                  RT @seb_repeto: Oups <a target="_blank" href="https://t.co/3aQvgJ7lRC">https://t.co/3aQvgJ7lRC</a>
+                </div>
+                <div class="footer_list_item footer_quote">
+                  Mise à jour du tutoriel Paypal Express Checkout avec l’utilisation de l’API REST ce coup-ci <a target="_blank" href="https://t.co/ehDxBc5a3v">https://t.co/ehDxBc5a3v</a>
+                </div>
+                <div class="footer_list_item footer_quote">
+                  Première intervention IRL, pas aussi évident que de parler devant une webcam :D <a target="_blank" href="https://t.co/qFgWOjTVjO">https://t.co/qFgWOjTVjO</a>
+                </div>
+              </div>
+            </div>
+            <div class="col-m-3 col-s-12">
+              <ul>
+                <li>
+                  <a class="footer_title" href="https://www.grafikart.fr/contact">Me contacter</a>
+                </li>
+                <li>
+                  <a href="https://www.grafikart.fr/contact"><span class="icon icon-envelope-o"></span> Par email</a>
+                </li>
+                <li>
+                  <a href="https://www.grafikart.fr/tchat"><span class="icon icon-comment"></span> Tchat</a>
+                </li>
+                <li>
+                  <a target="_blank" href="https://www.youtube.com/user/grafikarttv"><span class="icon icon-youtube-play"></span> Chaine youtube</a>
+                </li>
+                <li>
+                  <a href="https://www.grafikart.fr/a-propos"><span class="icon icon-info"></span> A propos</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </footer>
+      <button class="gotop is-visible"> <svg width="100%" height="100%" viewBox="0 0 7 5" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:1.5"> <path d="M1,4l2.5,-3l2.5,3" style="fill:none;stroke:#fff;stroke-width:1.4px"></path></svg> </button><div class="flash_holder"> </div>
+    </div>
+    <script src="./Docker_Environnement_files/jquery.min.js.téléchargement" data-turbolinks-eval="false"></script>
+    <script src="./Docker_Environnement_files/application.ea2f34229ffa47eafa40.js.téléchargement" data-turbolinks-eval="false"></script>
+    
+  
+</body></html>

@@ -1,3 +1,51 @@
+Notif:
+à part les dossiers /var/lib/docker et /var/lib/boot2docker tous les autres dossiers 
+seront réinitialisés à chaque redémarrage.
+
+ajouter un repertoire a partager sur la vm de boot2docker exp: www de notre machine
+puis : boot2docker ssh
+      mkdir /var/www
+	  sudo mount -t vboxsf www /var/www
+on trouve après les fichier de notre repertoire de pc www dans /var/www
+
+***creation fichier sh s'excute en lancant la machine:
+sudo vi /var/lib/boot2docker/bootlocal.sh
+on ajoute:
+mkdir /var/www
+mount -t vboxsf www /var/www
+sauvgarde puis:
+sudo chmod +x /var/lib/boot2docker/bootlocal.sh
+
+aussi pour docker composer 
+on l'installe avec : sudo -i curl -L https://github.com/docker/compose/releases/download/1.17.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
+on ajout ca au fichier bootlocal.sh creer avant:
+cp  /var/lib/boot2docker/docker-compose /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+
+puis 
+boot2docker stop
+boot2docker start
+boot2docker ssh
+
+-créer un container qui contient apache php:
+docker run --name apache --rm -p 80:80 tutum/apache-php
+
+-excuter le bash d'apache en mode interactive
+docker exec -ti apache bash
+
+-si je sort de bash il arrète le container, il faut pointer l'apache sur var/www, donc on retape:
+docker run --name apache --rm -p 80:80 -v /var/www:/app tutum/apache-php
+
+-on crée notre php.ini avec la config voulu dans notre rep www/dockerconfig, puis on créer un lien pour le monter
+docker run --name apache --rm -p 80:80 -v /var/www/dockerconfig/php.ini:/etc/php5/apache2/conf.d/30-custom.ini -e ALLOW_OVERRIDE=true -v /var/www:/app tutum/apache-php
+
+
+
+
+
+
+************************************************************************************************
+
 https://hub.docker.com/            // contient les images quand a besoin
 docker search --stars=10 debian    // chercher une image qui a 10 star
 docker pull debian                 // telécharger une image sur la hote
