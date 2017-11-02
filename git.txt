@@ -1,0 +1,111 @@
+Imaginons que mon dépôt local se trouve dans la situation suivante :
+          A---B---C mes_devs [HEAD]
+         /
+    D---E---F---G master
+A la révision C, je me dis que mon travail (mes_devs) peut être poussé sur la branche [origin/master] (la branche de référence du dépôt distant).
+A ce moment là, si je choisis de merger ma branche avant de pousser mes modifications, Git génère une révision de merge H :
+
+          A---B---C 
+         /         \
+    D---E---F---G---H master mes_devs [HEAD]
+La révision H ne sert pas à grand chose et au final mes collaborateurs voient une boucle dans l’historique du projet.
+
+*************************************************************************************************************************************************
+Imaginons que mon dépôt local se trouve dans la situation suivante :
+          A---B---C mes_devs [HEAD]
+         /
+    D---E---F---G master
+En utilisant la commande git rebase, il est possible d’appliquer les modifications des révisions A, B et C sur la révision G:
+
+git rebase master
+                   A---B---C mes_devs [HEAD]
+                 /
+    D---E---F---G master
+On peut alors merger notre branche master pour maintenir notre historique linéaire.
+
+git checkout master
+git merge mes_devs
+                   A---B---C mes_devs master [HEAD]
+                 /
+    D---E---F---G
+	
+***********************************************************************************************************************************************
+
+Utilisation de rebase dans la commande pull
+
+Pour rappel, la commande git pull équivaut à git fetch + git merge.
+Imaginons que je me trouve dans cette situation :
+           C master [HEAD]
+         /
+    A---B---D [origin/master]
+Si je lance la commande git pull sans la moindre option, j’obtiens ceci :
+
+           -C-
+         /     \
+    A---B---D---E master [origin/master] [HEAD]
+Si je lance la commande git pull –rebase, je change le comportement par défaut de la commande git pull pour qu’elle devienne l’équivalent de git fetch + git rebase pour m’épargner la création du commit de merge:
+
+               C master [HEAD]
+             /
+    A---B---D [origin/master]
+	
+***********************************************************************************************************************************************
+
+Comment modifier ses révisions avant de les pousser
+
+
+Revenons sur la situation suivante
+          A---B---C mes_devs [HEAD]
+         /
+    D---E---F---G master
+Avant d’appliquer la procédure décrite dans la section précédente, je me rends compte que mes révisions ont été mal définies. Les révisions A et B correspondent à la correction d’un même bug si bien que la révision A n’a aucune raison d’exister seule.
+De plus, la révision C contient une évolution et une correction de bug complètement décorrelées.
+Si vous tenez à pousser des révisions qui ont du sens, alors l’option -i (ou –interactive)de git rebase est ce que vous cherchez.
+La commande suivante va nous permettre de travailler sur l’historique de la branche courante en se limitant aux 3 dernières révisions:
+
+git rebase -i HEAD~3
+Le mode interactif de git s’active et vous verrez alors les lignes suivantes dans un éditeur de texte:
+
+pick 15ed2a6 Début de correction du bug 1. (A)
+pick 87be587 Fin de correction du bug 1. (B)
+pick bc4875d Ajout de la fonctionnalité X. (C)
+
+# Rebase b9be212..259a7e6 onto bc4875d
+#
+# Commands:
+#  p, pick = use commit
+#  r, reword = use commit, but edit the commit message
+#  e, edit = use commit, but stop for amending
+#  s, squash = use commit, but meld into previous commit
+#  f, fixup = like "squash", but discard this commit's log message
+#  x, exec = run command (the rest of the line) using shell
+#
+# If you remove a line here THAT COMMIT WILL BE LOST.
+# However, if you remove everything, the rebase will be aborted.
+#
+C’est là que vous pouvez agir sur votre historique en remplaçant le mot clé “pick” par une des commandes suggérées par le mode interactif de git.
+Vous pouvez supprimer ou changer l’ordre des commits en supprimant/échangeant les lignes correspondantes. Il ne faut surtout pas chercher à modifier les clés (hash) identifiant les révisions.
+Dans notre exemple nous voulons appliquer les opérations suivantes :
+
+Changer le message de A.
+Combiner A et B sans conserver le message de B.
+Séparer la révision C en C1 et C2.
+Ce qui nous donne :
+
+reword 15ed2a6 Début de correction du bug 1.
+fixup 87be587 Fin de correction du bug 1.
+edit bc4875d Ajout de la fonctionnalité X.
+Git va vous inviter à saisir le message de commit de la révision A dans un premier temps.
+Ensuite, vous devrez restaurer le système de fichiers à l’état qui précédait le commit de la révision C avant de reconstruire les révisions C1 et C2.
+
+git reset HEAD~1
+git add /correction/de/bug/2/.
+git commit -m "correction du bug 2"
+git add /ajout/de/fonctionnalité/X/.
+git commit -m "Ajout de la fonctionnalité X."
+git rebase --continue
+Vous finissez avec l’arborescence suivante :
+
+          A---C1---C2 mes_devs [HEAD]
+         /
+    D---E---F---G master
