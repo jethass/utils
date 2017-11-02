@@ -1,0 +1,369 @@
+évitez d'employer l'étoile dans la clause SELECT...
+SELECT *
+FROM   T_CLIENT
+
+préférez nommer les colonnes une à une
+SELECT CLI_ID, TIT_CODE, CLI_NOM, 
+       CLI_PRENOM, CLI_ENSEIGNE
+FROM   T_CLIENT
+
+***************************************************************************************************************************
+évitez d'employer DISTINCT dans la clause SELECT...
+SELECT DISTINCT CHB_NUMERO, CHB_ETAGE
+FROM T_CHAMBRE
+
+lorsque cela n'est pas nécessaire
+SELECT  CHB_NUMERO, CHB_ETAGE
+FROM T_CHAMBRE
+
+***************************************************************************************************************************
+n'employez pas de colonne dans la clause SELECT de la sous requête EXISTS...
+SELECT CHB_ID
+FROM   T_CHAMBRE T1
+WHERE  NOT EXISTS (SELECT CHB_ID
+                   FROM   TJ_CHB_PLN_CLI T2
+                   WHERE  PLN_JOUR = '2000-11-11'
+                     AND  T2.CHB_ID = T1.CHB_ID)
+
+utilisez l'étoile ou une constante
+SELECT CHB_ID
+FROM   T_CHAMBRE T1
+WHERE  NOT EXISTS (SELECT *
+                   FROM   TJ_CHB_PLN_CLI T2
+                   WHERE  PLN_JOUR = '2000-11-11'
+                     AND  T2.CHB_ID = T1.CHB_ID)
+***************************************************************************************************************************
+évitez de compter une colonne...
+SELECT COUNT (CHB_ID)
+FROM T_CHAMBRE
+
+quand-il suffit de compter les lignes
+SELECT COUNT (*)
+FROM T_CHAMBRE
+
+***************************************************************************************************************************
+évitez d'utiliser le LIKE...
+SELECT *
+FROM   T_CLIENT
+WHERE  CLI_NOM LIKE 'D%'
+
+si une fourchette de recherche le permet
+SELECT *
+FROM   T_CLIENT
+WHERE  CLI_NOM BETWEEN 'D' AND 'E '
+
+***************************************************************************************************************************
+
+évitez les jointures dans le WHERE...
+SELECT *
+FROM   T_CLIENT C, T_FACTURE F
+WHERE  EXTRACT(YEAR FROM F.FAC_DATE) = 2000
+  AND  F.CLI_ID = C.CLI_ID
+
+préférez l'opérateur normalisé JOIN
+SELECT *
+FROM   T_CLIENT C
+       JOIN T_FACTURE F
+            ON F.CLI_ID = C.CLI_ID 
+WHERE  EXTRACT(YEAR FROM F.FAC_DATE) = 2000
+
+***************************************************************************************************************************
+
+évitez les fourchettes < et > pour des valeurs discrètes...
+SELECT *
+FROM   T_FACTURE
+WHERE  FAC_DATE > '2000-06-18' 
+  AND  FAC_DATE < '2000-07-15'
+
+préférez le BETWEEN
+SELECT *
+FROM   T_FACTURE
+WHERE  FAC_DATE BETWEEN '2000-06-18' 
+                AND '2000-07-14'
+
+***************************************************************************************************************************
+
+évitez le IN avec des valeurs discrètes recouvrantes...
+SELECT *
+FROM   T_CHAMBRE
+WHERE  CHB_NUMERO IN (11, 12, 13, 14)
+
+préférez le BETWEEN
+SELECT *
+FROM T_CHAMBRE
+WHERE CHB_NUMERO BETWEEN 11  AND 14
+
+***************************************************************************************************************************
+
+évitez d'employer le DISTINCT...
+SELECT DISTINCT CLI_NOM, CLI_PRENOM
+FROM   T_CLIENT C
+       JOIN TJ_CHB_PLN_CLI J
+            ON C.CLI_ID = J.CLI_ID
+WHERE  PLN_JOUR = '2000-11-11'
+
+si une sous requête EXISTS vous offre le dédoublonnage
+
+SELECT CLI_NOM, CLI_PRENOM
+FROM   T_CLIENT C
+WHERE  EXISTS (SELECT *
+               FROM   TJ_CHB_PLN_CLI J
+               WHERE  C.CLI_ID = J.CLI_ID
+                 AND  PLN_JOUR = '2000-11-11')
+
+***************************************************************************************************************************
+évitez les sous requêtes...
+SELECT CHB_ID
+FROM   T_CHAMBRE
+WHERE  CHB_ID NOT IN (SELECT CHB_ID
+                      FROM   TJ_CHB_PLN_CLI
+                      WHERE  PLN_JOUR = '2000-11-11')
+
+quand vous pouvez utiliser les jointures
+SELECT DISTINCT C.CHB_ID 
+FROM   T_CHAMBRE C
+       LEFT OUTER JOIN TJ_CHB_PLN_CLI P
+            ON C.CHB_ID = P.CHB_ID 
+               AND PLN_JOUR = '2000-11-11'
+WHERE P.CHB_ID IS  NULL
+
+***************************************************************************************************************************
+
+évitez les sous requêtes avec IN...
+SELECT CHB_ID
+FROM   T_CHAMBRE
+WHERE  CHB_ID NOT IN (SELECT CHB_ID
+                      FROM   TJ_CHB_PLN_CLI
+                      WHERE  PLN_JOUR = '2000-11-11')
+
+lorsque vous pouvez utiliser EXISTS
+SELECT CHB_ID
+FROM   T_CHAMBRE T1
+WHERE  NOT EXISTS (SELECT *
+                   FROM   TJ_CHB_PLN_CLI T2
+                   WHERE  PLN_JOUR = '2000-11-11'
+                     AND  T2.CHB_ID = T1.CHB_ID)
+
+***************************************************************************************************************************
+
+transformez les COALESCE...
+SELECT LIF_ID,
+      (LIF_QTE * LIF_MONTANT) 
+       * (1 - COALESCE(LIF_REMISE_POURCENT, 0)/100)
+       - COALESCE(LIF_REMISE_MONTANT, 0) AS TOTAL_LIGNE
+FROM T_LIGNE_FACTURE
+
+en UNION
+
+SELECT LIF_ID, (LIF_QTE * LIF_MONTANT)
+FROM   T_LIGNE_FACTURE
+WHERE  LIF_REMISE_POURCENT IS NULL 
+  AND  LIF_REMISE_MONTANT IS NULL
+UNION
+SELECT LIF_ID, (LIF_QTE * LIF_MONTANT) 
+               - LIF_REMISE_MONTANT
+FROM   T_LIGNE_FACTURE
+WHERE  LIF_REMISE_POURCENT IS NULL
+  AND  LIF_REMISE_MONTANT IS NOT NULL
+UNION
+SELECT LIF_ID, (LIF_QTE * LIF_MONTANT) 
+               * (1 - LIF_REMISE_POURCENT/100) 
+FROM   T_LIGNE_FACTURE
+WHERE  LIF_REMISE_POURCENT IS NOT NULL
+  AND  LIF_REMISE_MONTANT IS NULL
+UNION
+SELECT LIF_ID, (LIF_QTE * LIF_MONTANT)
+               * (1 - LIF_REMISE_POURCENT/100)
+               - LIF_REMISE_MONTANT
+FROM   T_LIGNE_FACTURE
+WHERE  LIF_REMISE_POURCENT IS NOT NULL
+  AND  LIF_REMISE_MONTANT IS NOT NULL
+  
+  
+***************************************************************************************************************************
+transformez les CASE...
+SELECT CHB_NUMERO, CASE CHB_ETAGE 
+                       WHEN 'RDC' THEN 0 
+                       WHEN '1er' THEN 1 
+                       WHEN '2e'  THEN 2 
+                    END AS ETAGE, CHB_COUCHAGE 
+FROM   T_CHAMBRE 
+ORDER  BY  ETAGE, CHB_COUCHAGE
+
+en UNION
+SELECT CHB_NUMERO, 0 AS ETAGE, CHB_COUCHAGE 
+FROM   T_CHAMBRE 
+WHERE CHB_ETAGE = 'RDC'
+UNION
+SELECT CHB_NUMERO, 1 AS ETAGE, CHB_COUCHAGE 
+FROM   T_CHAMBRE 
+WHERE CHB_ETAGE = '1er'
+UNION
+SELECT CHB_NUMERO, 2 AS ETAGE, CHB_COUCHAGE 
+FROM   T_CHAMBRE 
+WHERE CHB_ETAGE = '2e'
+ORDER  BY  ETAGE, CHB_COUCHAGE 
+
+***************************************************************************************************************************
+transformez les EXCEPT...
+SELECT CHB_ID
+FROM   T_CHAMBRE
+EXCEPT
+SELECT CHB_ID
+FROM   TJ_CHB_PLN_CLI
+WHERE  PLN_JOUR = '2000-11-11'
+
+en jointures
+SELECT DISTINCT C.CHB_ID 
+FROM   T_CHAMBRE C
+       LEFT OUTER JOIN TJ_CHB_PLN_CLI P
+            ON C.CHB_ID = P.CHB_ID 
+               AND PLN_JOUR = '2000-11-11'
+WHERE P.CHB_ID IS  NULL
+
+***************************************************************************************************************************
+transformez les INTERSECT...
+SELECT CHB_ID
+FROM   T_CHAMBRE
+INTERSECT
+SELECT CHB_ID
+FROM   TJ_CHB_PLN_CLI
+WHERE  PLN_JOUR = '2000-11-11'
+
+en jointure
+SELECT DISTINCT C.CHB_ID 
+FROM   T_CHAMBRE C
+       INNER JOIN TJ_CHB_PLN_CLI P
+             ON C.CHB_ID = P.CHB_ID 
+WHERE  PLN_JOUR = '2000-11-11'
+
+***************************************************************************************************************************
+transformez les UNION...
+
+SELECT OBJ_NOM AS NOM, OBJ_PRIX AS PRIX 
+FROM   T_OBJET 
+UNION 
+SELECT MAC_NOM AS NOM, MAC_PRIX AS PRIX 
+FROM   T_MACHINE 
+ORDER  BY NOM, PRIX
+(l'exemple complet se trouve dans : les techniques des SGBDR)
+
+en jointure
+
+SELECT COALESCE(OBJ_NOM, MAC_NOM) AS NOM, 
+       COALESCE(OBJ_PRIX, MAC_PRIX) AS PRIX 
+FROM   T_OBJET O 
+       FULL OUTER JOIN T_MACHINE M 
+            ON O.OBJ_NOM = M.MAC_NOM 
+               AND O.OBJ_PRIX = M.MAC_PRIX 
+ORDER  BY NOM, PRIX
+
+***************************************************************************************************************************
+
+transformez les sous requêtes <> ALL ...
+SELECT CHB_ID, CHB_COUCHAGE
+FROM T_CHAMBRE
+WHERE CHB_COUCHAGE <> ALL (SELECT CHB_COUCHAGE
+                           FROM   T_CHAMBRE
+                           WHERE  CHB_ETAGE ='RDC')
+en NOT IN
+SELECT CHB_ID, CHB_COUCHAGE
+FROM T_CHAMBRE
+WHERE CHB_COUCHAGE 
+      NOT IN (SELECT CHB_COUCHAGE
+              FROM   T_CHAMBRE
+              WHERE  CHB_ETAGE ='RDC')
+
+***************************************************************************************************************************
+
+transformez les sous requêtes = ANY ...
+SELECT CHB_ID, CHB_COUCHAGE
+FROM T_CHAMBRE
+WHERE CHB_COUCHAGE = ANY (SELECT CHB_COUCHAGE
+                          FROM   T_CHAMBRE
+                          WHERE  CHB_ETAGE ='RDC')
+en IN
+SELECT CHB_ID, CHB_COUCHAGE
+FROM T_CHAMBRE
+WHERE CHB_COUCHAGE IN (SELECT CHB_COUCHAGE
+                       FROM   T_CHAMBRE
+                       WHERE  CHB_ETAGE ='RDC')
+
+***************************************************************************************************************************
+
+transformez les sous requêtes ANY / ALL ...
+
+SELECT CHB_ID, CHB_COUCHAGE
+FROM T_CHAMBRE
+WHERE CHB_COUCHAGE > ALL (SELECT CHB_COUCHAGE
+                          FROM   T_CHAMBRE
+                          WHERE  CHB_ETAGE ='RDC')
+...en combinant sous requêtes et aggrégat
+
+SELECT CHB_ID, CHB_COUCHAGE
+FROM T_CHAMBRE
+WHERE CHB_COUCHAGE > (SELECT MAX(CHB_COUCHAGE)
+                      FROM   T_CHAMBRE
+                      WHERE  CHB_ETAGE ='RDC')
+
+***************************************************************************************************************************
+évitez les sous requêtes corrélées...
+
+SELECT DISTINCT VILLE_ETP 
+FROM   T_ENTREPOT AS ETP1 
+WHERE  NOT EXISTS 
+      (SELECT * 
+       FROM   T_RAYON RYN 
+       WHERE  NOT EXISTS 
+             (SELECT * 
+              FROM   T_ENTREPOT AS ETP2 
+              WHERE  ETP1.VILLE_ETP = ETP2.VILLE_ETP 
+                AND (ETP2.RAYON_RYN = RYN.RAYON_RYN)))
+
+(l'exemple complet se trouve dans : la division relationnelle...)
+...préférez des sous requêtes sans corrélation
+SELECT DISTINCT VILLE_ETP 
+FROM   T_ENTREPOT 
+WHERE  RAYON_RYN IN 
+   (SELECT RAYON_RYN 
+    FROM   T_ENTREPOT 
+    WHERE  RAYON_RYN NOT IN 
+       (SELECT RAYON_RYN 
+        FROM   T_ENTREPOT 
+        WHERE  RAYON_RYN NOT IN 
+           (SELECT RAYON_RYN 
+            FROM T_RAYON))) 
+GROUP   BY VILLE_ETP 
+HAVING  COUNT (*) = 
+   (SELECT COUNT(DISTINCT RAYON_RYN) 
+    FROM   T_RAYON)
+
+***************************************************************************************************************************
+
+évitez les sous requêtes corrélées...
+SELECT FAC_ID,  (SELECT MAX(LIF_QTE * LIF_MONTANT) 
+                 FROM T_LIGNE_FACTURE L 
+                 WHERE F.FAC_ID = L.FAC_ID)
+FROM   T_FACTURE F
+ORDER BY FAC_ID
+
+préférez des jointures
+SELECT F.FAC_ID,  MAX(LIF_QTE * LIF_MONTANT)
+FROM   T_FACTURE F
+       JOIN T_LIGNE_FACTURE L 
+            ON F.FAC_ID = L.FAC_ID
+GROUP BY F.FAC_ID
+ORDER BY F.FAC_ID
+
+***************************************************************************************************************************
+
+n'utilisez pas de nombre dans la clause ORDER BY...
+SELECT LIF_ID, (LIF_QTE * LIF_MONTANT) 
+FROM   T_LIGNE_FACTURE
+ORDER BY 1, 2
+
+spécifiez de préférence les noms des colonnes, y compris dans la clause SELECT
+SELECT LIF_ID, 
+       (LIF_QTE * LIF_MONTANT) AS LIF_MONTANT
+FROM   T_LIGNE_FACTURE
+ORDER BY LIF_ID, LIF_MONTANT
