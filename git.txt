@@ -109,3 +109,8 @@ Vous finissez avec l’arborescence suivante :
           A---C1---C2 mes_devs [HEAD]
          /
     D---E---F---G master
+    
+    
+    
+Commande par Antoine pour supprimer toutes les branches locales sauf la branche master :
+`git branch | grep -v "master" | xargs git branch -D`     
