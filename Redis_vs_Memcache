@@ -1,0 +1,17 @@
+Redis et Memcached sont des systèmes de cache performant permettant de stocker pour un temps définissable des données sur la mémoire vive (RAM)
+la vitesse d’exécution de memcached est superieure à Redis.
+Memcached est un pur système de cache et ne propose que peu de fonctionnalités contrairement à Redis.
+Différencie de Redis par rapport à Memcached :
+
+La persistance des données : Redis enregistre les données sur le disque dur ( en cas de panne ou autres, les données ne sont pas perdues )
+La replication des données
+L’énumeration des clés
+La sécurité : un système d’authentification ( login/mdp )
+Les structures de données supportés : Redis suport les hashes, lists, sets, sorted sets …
+Que peut on en conclure ?
+
+Parler d’optimisation, de vitesse d’exécution de site, passe forcement par un système de cache :
+ Memcached et Redis sont 2 solutions efficaces dans ce domaine. Le premier propose des performances ( de rapidité ) nettement plus puissante,
+ alors que le second propose beaucoup de fonctionnalités en plus du cache. Le choix de l’ un ou de l’autre dépendra donc du besoin que l’on a :
+ Memcached pour des données peu sensible, où l’on privilégie le temps d’exécution; Redis pour ses fonctionnalités tel que la persistance,
+ la réplication et la sécurité. On pourrait aussi penser à coupler ces deux systèmes, afin de tirer au mieux les avantages de l’un et de l’autre.
