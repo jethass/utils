@@ -36,3 +36,7 @@ class CustomerConverter extends AbstractConverter
     );
 
 }
+
+
+ $parameters   = $request->query->all();
+ $customerConverterData = (new CustomerConverter())->convert($parameters);
