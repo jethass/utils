@@ -1,0 +1,112 @@
+sudo apt-get install git
+sudo apt-get install ant
+sudo apt install ruby
+sudo gem install sass
+cd ..
+mkdir workspace
+cd workspace/
+
+# Générer avant la clef SSH en suivant cette superbe doc : 
+https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/
+
+
+sudo apt install php
+sudo apt install php-memcached
+sudo apt install php-curl
+sudo apt install php-bcmath
+sudo apt install php-intl
+sudo apt install php-amqplib
+sudo apt install php-mbstring 
+sudo apt install composer
+sudo apt install php-dom
+sudo apt install php-mysql
+sudo apt install vim
+
+# Installer le mysql server
+sudo apt-get install mysql-server
+root / root 
+
+
+sudo apt-get install npm
+sudo apt-get install memcached
+sudo apt-get install rabbitmq-server
+
+git clone git@github.com:ARAMISAUTO/uxr.git
+cd uxr/
+Copier le fichier parameters.yml
+Copier le fichier build.properties-dist de quelqu'un dans le dossier etc/$USER/
+composer install
+ant db
+npm install
+
+Installer la derniere version de nodejs
+---------------------------------------
+sudo npm cache clean -f
+sudo npm install -g n
+sudo n stable
+
+Lancer bower
+./node_modules/bower/bin/bower install
+
+Installer les assets :
+cd src/symfony2
+php app/console assets:install --symlink
+
+Lien php 5.6 
+http://askubuntu.com/questions/756181/installing-php-5-6-on-xenial-16-04
+
+Attention : $user doit être celui du pc, pas un prenom
+
+
+<VirtualHost *:80>
+        # The ServerName directive sets the request scheme, hostname and port that
+        # the server uses to identify itself. This is used when creating
+        # redirection URLs. In the context of virtual hosts, the ServerName
+        # specifies what hostname must appear in the request's Host: header to
+        # match this virtual host. For the default virtual host (this file) this
+        # value is not decisive as it is used as a last resort host regardless.
+        # However, you must set it for any further virtual host explicitly.
+        #ServerName www.example.com
+        ServerName  uxr.aramisauto.local
+        ServerAdmin webmaster@localhost
+        DocumentRoot /var/www/uxr/src/symfony2/web
+        DirectoryIndex index.php
+        <Directory "/var/www/uxr/src/symfony2/web">
+                AllowOverride All
+                Allow from All
+        </Directory>
+        # Available loglevels: trace8, ..., trace1, debug, info, notice, warn,
+        # error, crit, alert, emerg.
+        # It is also possible to configure the loglevel for particular
+        # modules, e.g.
+        #LogLevel info ssl:warn
+        ErrorLog ${APACHE_LOG_DIR}/uxr.error.log
+        CustomLog ${APACHE_LOG_DIR}/uxr.access.log combined
+        # For most configuration files from conf-available/, which are
+        # enabled or disabled at a global level, it is possible to
+        # include a line for only one particular virtual host. For example the
+        # following line enables the CGI configuration for this host only
+        # after it has been globally disabled with "a2disconf".
+        #Include conf-available/serve-cgi-bin.conf
+</VirtualHost>
+
+
+
+127.0.0.1   localhost
+127.0.1.1   user-Latitude-E7470
+192.168.251.3   mysql_main
+#89.185.39.195   socket.uxr-claranet.aramisauto.com
+# The following lines are desirable for IPv6 capable hosts
+::1     ip6-localhost ip6-loopback
+fe00::0 ip6-localnet
+ff00::0 ip6-mcastprefix
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+192.168.251.22 rabbitmq
+#192.168.251.3   elasticsearch_090 elasticsearch_14
+192.168.251.4   elasticsearch_090 elasticsearch_14
+127.0.0.1       localhost aramisauto.local ws.aramisauto.local robusto.aramisauto.local v4.sf1.local.aramisauto.com cohiba.aramisauto.local ri.aramisauto.local crm.aramisauto.local v5.aramisauto.local company.aramisauto.local api.aramisauto.local docservice.aramisauto.local ais.aramisauto.local api.aramisauto.local cms.aramisauto.local uxr.aramisauto.local www.aramisauto.local
+192.168.251.3   data.platforms.aramisauto.com
+127.0.0.1 symfony.dev
+
+
