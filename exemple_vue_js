@@ -1,0 +1,473 @@
+<?php
+
+namespace Aramis\AccountBundle\Controller\Ajax;
+
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+
+/**
+ * Class DeliveryAjaxController
+ *
+ * @package Aramis\AccountBundle\Controller\Ajax
+ * @Route("/delivery")
+ *
+ */
+class DeliveryAjaxController extends AjaxController
+{
+    const STATUS_1 = 'Véhicule en cours de commande';
+    const STATUS_2 = 'Véhicule commandée';
+    const STATUS_3 = 'Véhicule en attente de transport';
+    const STATUS_4 = 'Véhicule fabriquée ';
+    const STATUS_5 = 'Véhicule en cours de transport';
+    const STATUS_6 = 'Véhicule en cours de préparation';
+    const STATUS_7 = 'Véhicule livrée';
+
+    /**
+     *
+     * @Route("/detail-delivery", name="aramis_account_ajax_delivery_resume" , options={"expose"=true})
+     *
+     * Example:
+     * http://www.aramisauto.local/app_dev.php/clients/ajax/delivery/detail-delivery?order-id=156164
+     *
+     */
+    public function getDeliveryInfoFromOrderAction(Request $request)
+    {
+        try {
+            $orderId         = $request->get('order-id');
+            $orderWebService = $this->get('aramis.order');
+            $order           = $orderWebService->getOrderById($orderId);
+            $deliveryInfo    = [];
+            $deliveryType    = 'delivery';
+            $timeZone        = new \DateTimeZone('Europe/Paris');
+
+            if ($order['deliveryType'] == 2) {
+                $deliveryType = 'liv_dom';
+            } else {
+                if ($order['hasReprise'] == 1) {
+                    $deliveryType = 'purchase_delivery';
+                    if ($order['items'][0]["vehicle"]['type_vehicle_demande']
+                        || $order['items'][0]["vehicle"]['type_vehicle_demande']) {
+                        $deliveryType = $deliveryType . '_vn';
+                    }
+                }
+            }
+
+            //Delivery Date
+            if ($order['deliveryDate'] != '0000-00-00' && $order['deliveryDate'] != '1970-01-01') {
+                $deliveryInfo['delivery_date_min'] = $order['deliveryDate'];
+                $deliveryInfo['delivery_date_max'] = $order['deliveryDate'];
+            } else {
+                if ($order['deliveryDateRevised'] != '0000-00-00') {
+                    $deliveryInfo['delivery_date_min'] = $order['deliveryDateRevised'];
+                    $deliveryInfo['delivery_date_max'] = $order['deliveryDateRevised'];
+                } else {
+                    $deliveryInfo['delivery_date_min'] = $order['deliveryDateEarliest'];
+                    $deliveryInfo['delivery_date_max'] = $order['deliveryDateLatest'];
+                }
+            }
+            $deliveryInfo['delivery_type']      = $deliveryType;
+            $deliveryInfo['delivery_date']      = $order['deliveryDate'] ? $order['deliveryDate'] : null;
+            $deliveryInfo['delivery_time']      = $order['deliveryTime'];
+            $deliveryInfo['delivery_agence_id'] = $order['deliveryAgency']['id'];
+            $deliveryInfo['delivery_timezone']  = $timeZone->getName();
+
+            return new JsonResponse($deliveryInfo);
+        } catch (\Exception $e) {
+            return $this->buildNotFoundJsonResponse($e->getMessage());
+        }
+    }
+
+    /**
+     *
+     * @Route("/calendar", name="aramis_account_ajax_delivery_calandar" , options={"expose"=true})
+     *
+     * Example:
+     * http://www.aramisauto.local/app_dev.php/clients/ajax/delivery/calendar?agency-id=STG&delivery-type=delivery&date
+     * -min=2017-12-11&date-max=2017-12-13
+     *
+     */
+    public function getCalendarAction(Request $request)
+    {
+        try {
+            $agencyId         = $request->get('agency-id');
+            $deliveryType     = 'sale';//$request->get('delivery-type');
+            $dateMin          = $request->get('date-min');
+            $dateMax          = $request->get('date-max');
+            $agencyWebService = $this->get('aramis.agency');
+            $calendar         = $agencyWebService->getSchedule(
+                $agencyId,
+                $deliveryType,
+                $dateMin,
+                $dateMax
+            );
+
+            return new JsonResponse($calendar[0]);
+        } catch (\Exception $e) {
+            return $this->buildNotFoundJsonResponse($e->getMessage());
+        }
+    }
+
+    /**
+     *
+     * @Route("/agency", name="aramis_account_ajax_delivery_agency" , options={"expose"=true})
+     *
+     * Example:
+     * http://www.aramisauto.local/app_dev.php/clients/ajax/delivery/agency?agency-id=CER
+     *
+     */
+    public function getAgencyAction(Request $request)
+    {
+        try {
+            $agencyId         = $request->get('agency-id');
+            $agencyWebService = $this->get('aramis.agency');
+            $agency           = $agencyWebService->get($agencyId);
+
+            return new JsonResponse($agency);
+        } catch (\Exception $e) {
+            return $this->buildNotFoundJsonResponse($e->getMessage());
+        }
+    }
+
+    /**
+     *
+     * @Route("/create-appointement", name="aramis_account_ajax_delivery_create_appointement" , options={"expose"=true})
+     *
+     * Example:
+     * http://www.aramisauto.local/app_dev.php/clients/ajax/delivery/create-appointement?agency-id=TRS&delivery-type
+     * =delivery&start-at=2017-07-05 10:00:00&email=geoffrey.benier@gmail.com&cmpid=
+     *
+     */
+    public function createNewAppointementAction(Request $request)
+    {
+        $data             = [];
+        $data['startAt']  = $request->get('start-at');
+        $data['endAt']    = $request->get('start-at');
+        $data['email']    = $request->get('email');
+        $data['type']     = $request->get('delivery-type');
+        $data['agencyId'] = $request->get('agency-id');
+        $data['cmpid']    = $request->get('cmpid') ? $request->get('cmpid') : null;
+
+        if ($request->get('delivery-type') === 'liv_dom') {
+            $data['check_sf_calendar'] = false;
+        }
+
+        $rdvSave = $this->get('aramis.appointment')->post($data);
+        $error   = null;
+
+        if (isset($rdvSave['error'])) {
+            if ($rdvSave['error'] == 'EXISTING_APPOINTMENT') {
+                $error = 'already_appointment';
+            } else {
+                $error = $rdvSave['error'];
+            }
+
+            return $this->buildAppointementErrorJsonResponse($error);
+        }
+
+        return new JsonResponse($rdvSave);
+    }
+
+    /**
+     *
+     * @Route("/tracking-order", name="aramis_account_ajax_delivery_tracking_order" , options={"expose"=true})
+     *
+     * Example:
+     * http://www.aramisauto.local/app_dev.php/clients/ajax/delivery/tracking-order?order-id=181631
+     *
+     */
+    public function getOrderTrackingAction(Request $request)
+    {
+        try {
+            $orderId         = $request->get('order-id');
+            $orderWebService = $this->get('aramis.order');
+            $order           = $orderWebService->getOrderById($orderId);
+            //en attente de l'ajout de champ status_robusto_car  dans web service order
+            $order['status_robusto_car'] = $order['items'][0]['vehicle']['status_robusto_car'];
+            $order['type_order']         = $order['items'][0]['vehicle']['availability'];
+            $status['traking_order']     = $this->getTrackingOrderFromRobusto($order['status_robusto_car'], $order['type_order']);
+
+            return new JsonResponse($status);
+        } catch (\Exception $e) {
+            return $this->buildNotFoundJsonResponse($e->getMessage());
+        }
+    }
+
+    /**
+     * @param $statutVehicule
+     *
+     * @return String
+     */
+    public function getTrackingOrderFromRobusto($statutVehicule, $typeOrder)
+    {
+        switch ($statutVehicule) {
+            case 'Préparation effectuée. VH prêt' :
+                return self::STATUS_3;
+            case 'Arrivé en transit' :
+                return self::STATUS_3;
+            case 'Arrivé fournisseur' :
+                if ($typeOrder === 'Sur commande') {
+                    return self::STATUS_4;
+                } else {
+                    return self::STATUS_3;
+                }
+            case 'Arrivé Aramis' :
+                return self::STATUS_6;
+            case 'Confirmé fournisseur' :
+                if ($typeOrder === 'Sur commande') {
+                    return self::STATUS_2;
+                } else {
+                    return self::STATUS_3;
+                }
+            case 'Transport programmé' :
+                if ($typeOrder === 'Sur commande') {
+                    return self::STATUS_4;
+                } else {
+                    return self::STATUS_3;
+                }
+                return self::STATUS_5;
+            case 'En cours de transport' :
+                return self::STATUS_5;
+            case 'Livré client' :
+                return self::STATUS_7;
+        }
+    }
+}
+
+
+/////////////////vue js/////////////////////////////////////////////////////////////////////////////////////
+//map component
+var mapAgency = {
+    props: ['agencyId', 'deliveryType'],
+    template: '<div style="margin-top:50px;">' +
+              '<div v-if="this.deliveryType == \'liv_dom\'">'+
+                 '<h1>Lieu De Livraison :</h1>'+
+                 '<h1>A DOMICILE :</h1>'+
+              '</div>'+
+              '<div v-else>' +
+                 '<h1>Lieu De Livraison :</h1>'+
+                 '<div>AGENCE ARAMISAUTO {{infoMap.label}}</div>'+
+                 '<div style="position:relative;height: 350px;">' +
+                      '<img style="position:absolute;top:0px;left:0px;width:350px;" v-bind:src="infoMap.calendarPicture" />'+
+                      '<div style="background-color: #fff;width:200px;color:#000;position: absolute;top:140px;left:0px;">' +
+                           '<div>AGENCE ARAMISAUTO {{infoMap.label}}</div><br/>'+
+                           '<div>{{infoMap.address1}}, {{infoMap.zipCode}} {{infoMap.city}}</div>'+
+                      '</div>'+
+                 '</div>'+
+              '</div>'+
+              '</div>',
+    data: function () {
+        return {
+            'infoMap': {}
+        }
+    },
+    mounted: function() {
+        var self = this;
+        var routeAgency = Routing.generate('aramis_account_ajax_delivery_agency', {'agency-id': self.agencyId });
+        $.ajax({
+            url: routeAgency,
+            type: 'GET',
+            success: function (res) {
+                self.$data.infoMap = res;
+                self.$data.infoMap.calendarPicture = "http://"+res.calendarPicture;
+            },
+            error: function (res) {
+            }
+        });
+    }
+}
+
+//datepicker component
+var datepicker = {
+    props: ['minDate', 'maxDate','value','schedule'],
+    template: '<div>' +
+                 '<input type="hidden" id="valuedatepiker"  />'+
+                 '<div id="datepicker"></div>' +
+                '<select id="hoursRdv" v-model="$parent.infoRdv.hoursRdv" class="select-hours" disabled="disabled">' +
+                //'<option v-for="(item, key) in infoCalendar.schedule[\'2017-12-11\']" value="item.time">{{item.time}}</option>' +
+                '</select>'+
+              '</div>',
+    mounted: function() {
+        var self = this;
+        $('#datepicker').datepicker({
+            dateFormat: 'yy-mm-dd',
+            defaultDate: self.maxDate,
+            minDate: self.minDate,
+            maxDate: self.maxDate
+        });
+
+        $('#valuedatepiker').change(function(){
+            $('#datepicker').datepicker('setDate', $(this).val());
+        });
+        $('#datepicker').change(function(){
+            $('#valuedatepiker').attr('value',$(this).val());
+            $('#hoursRdv').removeAttr('disabled');
+            var dateSelected = $(this).val();
+            $("#hoursRdv").empty(); // remove old options
+             $.each(self.schedule[dateSelected], function(key,value) {
+                $("#hoursRdv").append($("<option></option>").attr("value", value.time).text(value.time));
+            });
+        });
+    }
+}
+
+
+//Calendar component
+var calendar = {
+    components: {
+        'datepicker': datepicker,
+        'mapAgency': mapAgency
+    },
+    props: ['agencyId', 'deliveryType', 'dateMin', 'dateMax','email','show'],
+    template: '<div class="center">' +
+                  '<div v-if = "$parent.$parent.$data.loadC" class="center">'+
+                      '<img src="http://www.gif-maniac.com/gifs/54/54389.gif"/>'+
+                  '</div>'+
+                  '<div v-if = "!$parent.$parent.$data.loadC">'+
+                      '<div v-if = "this.show">'+
+                          '<div>choisissez ci-dessous le jour et l\'heure de votre rendez vous de livraison</div></br>' +
+                          '<div class="bloc-calendar">'+
+                              '<datepicker :schedule="infoCalendar.schedule" size="10" maxlength="10" placeholder="AAAA-MM-JJ" :min-date="this.dateMin" :max-date="this.dateMax"></datepicker>'+
+                          '</div>'+
+                          '<button class="btn-rdv" v-on:click="createRdv()">Prendre rendez vous</button>'+
+                      '</div>'+
+                  '</div>'+
+                 //affichage de map
+                 '<div v-if="$parent.$parent.$data.loadL" class="center">'+
+                 '<img src="http://www.gif-maniac.com/gifs/54/54389.gif"/>'+
+                 '</div>'+
+                 '<div v-if="!$parent.$parent.$data.loadL">'+
+                    '<mapAgency :agency-id="this.agencyId" :delivery-type="this.deliveryType"></mapAgency>'+
+                 '</div>'+
+              '</div>',
+    data: function () {
+        return {
+            'infoCalendar': { },
+            'infoRdv': {
+                'dateRdv': null,
+                'hoursRdv': null
+             },
+            'resultCreateRdv':{
+
+            }
+        }
+    },
+    mounted: function () {
+        var self = this;
+        var routeCalendar = Routing.generate('aramis_account_ajax_delivery_calandar', {
+            'agency-id': self.agencyId,
+            'delivery-type': self.deliveryType,
+            'date-min': self.dateMin,
+            'date-max': self.dateMax
+        });
+        $.ajax({
+            url: routeCalendar,
+            type: 'GET',
+            success: function (res) {
+                self.$data.infoCalendar = res;
+                self.$parent.$parent.$data.loadC = false;
+                self.$parent.$parent.$data.loadL = false;
+            },
+            error: function (res) {
+            }
+        });
+    },
+    methods: {
+        createRdv: function (event) {
+            var self = this;
+            self.infoRdv.dateRdv = $('#valuedatepiker').val();
+            if(self.infoRdv.dateRdv !== null && self.infoRdv.hoursRdv  !== null) {
+                var routeCreateRdv = Routing.generate('aramis_account_ajax_delivery_create_appointement', {
+                    'agency-id': self.agencyId,
+                    'delivery-type': self.deliveryType,
+                    'start-at': self.infoRdv.dateRdv +' '+ self.infoRdv.hoursRdv,
+                    'email': self.email
+                });
+
+                $.ajax({
+                    url: routeCreateRdv,
+                    type: 'GET',
+                    success: function (res) {
+                        self.$data.resultCreateRdv = res;
+                        alert('Rendez vous crée avec sucess!');
+                    },
+                    error: function (res) {
+                        alert('Problème lors de création de RDV');
+                    }
+                });
+            } else {
+                alert ("remplir la date et l'heure");
+            }
+        }
+    }
+}
+
+//Delivery component
+var delivery = {
+    props: ['load', 'orderId','email'],
+    components: {
+        'calendar': calendar
+    },
+    template: '<div class="center">' +
+                '<div v-if="$parent.$data.loadD" class="center">'+
+                '<img src="http://www.gif-maniac.com/gifs/54/54389.gif"/>'+
+                '</div>'+
+                '<div v-if="!$parent.$data.loadD">'+
+                    '<b style="text-align: center;">Livraison de votre voiture</b>' +
+                    // si date de livraison existe on affiche la date de livraison
+                    '<div v-if="infoDelivery.delivery_date !== \'0000-00-00\' ">' +
+                        '<div style="text-align: center;"> Livraison le : </div><br/>' +
+                        '<div style="text-align: center;" class="date-liv">{{ infoDelivery.delivery_date }} </div>' +
+                    '</div>' +
+                    //sinon on affiche la date de livraison au plus tard
+                    '<div v-else >' +
+                        '<b style="text-align: center;"> Livraison au plus tard le : </b><br/>' +
+                        '<div class="date-liv"> {{infoDelivery.delivery_date_max }} </div><br/><br/>' +
+                    '</div>' +
+                    // affichage de calendrier pour choix de RDV
+                    '<calendar :show="$parent.$data.showcalendar" :email="this.email" :agency-id="$data.infoDelivery.delivery_agence_id" :delivery-type="$data.infoDelivery.delivery_type" :date-min="$data.infoDelivery.delivery_date_min" :date-max="$data.infoDelivery.delivery_date_max" >'+
+                    '</calendar>'+
+                '</div>'+
+              '</div>',
+    data: function () {
+        return {
+            'infoDelivery': {}
+        }
+    },
+    mounted: function () {
+        var self = this;
+        var routeDelivery = Routing.generate('aramis_account_ajax_delivery_resume', {'order-id': self.orderId });
+        $.ajax({
+            url: routeDelivery,
+            type: 'GET',
+            success: function (res) {
+                if( res.delivery_type !== null &&  res.delivery_agence_id !== null ) {
+                    self.$data.infoDelivery = res;
+                    self.$parent.$data.loadD = false;
+                    if((res.delivery_date == null || res.delivery_date == '0000-00-00')) {
+                        self.$parent.$data.showcalendar = true;
+                    }
+                }
+            },
+            error: function (res) {
+            }
+        });
+    }
+}
+
+//parent Vue js
+var app = new Vue(
+    {
+        el: '#app',
+        components: {
+            'delivery': delivery
+        },
+        data: {
+            'loadD': true,
+            'loadC': true,
+            'loadL': true,
+            'showcalendar': false
+        }
+    }
+)
+
