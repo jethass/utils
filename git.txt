@@ -1,3 +1,5 @@
+git push --force-with-lease
+
 Imaginons que mon dépôt local se trouve dans la situation suivante :
           A---B---C mes_devs [HEAD]
          /
