@@ -50,3 +50,6 @@ php app/console fos:user:create username email password
 Rendre un utilisateur admin :
 php app/console fos:user:promote username
 ROLE_ADMIN
+
+build translations
+php console translation:extract fr --config=aramis --domain=FrontBundle --env=prod
