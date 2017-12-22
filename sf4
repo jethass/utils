@@ -1,0 +1,20 @@
+SF4  : php > 7.1
+
+//creation project SF4
+composer create-project symfony/skeleton demoSf4
+
+//start server local
+php bin/console server:run
+
+//regarder les injection autowiré
+php bin/console debug:autowiring
+
+//creation de controller avec maker bundle
+php bin/console make:controller Posts
+
+//les recipe
+composer require server
+composer require twig
+composer require annotations
+composer require profiler
+composer require maker-bundle
