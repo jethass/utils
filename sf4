@@ -41,6 +41,7 @@ php bin/console doctrine:migrations:migrate
 //pour lance le build encore 
 ./nodes_modules/.bin/encore dev
 ./nodes_modules/.bin/encore dev --watch
+./nodes_modules/.bin/encore dev-server --> demare server asset pour overeload
 
 //pour production
 ./nodes_modules/.bin/encore production
